@@ -48,7 +48,6 @@ module.exports = async function handler(req, res) {
       hasMore = !!offset;
     }
 
-    // Only include tasks that have a Phase field set
     const filtered = allTasks.filter(task => {
       if (task.completed) return false;
       const phaseField = task.custom_fields?.find(f => f.gid === PHASE_FIELD_GID);
