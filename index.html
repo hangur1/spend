@@ -16,28 +16,6 @@
       --text: #1a1a18;
       --muted: #888880;
       --header-bg: #2a2a26;
-      --phase-bg: #3a3a34;
-
-      /* Channel colors — pastel, distinct */
-      --c-creative:    #c8dff0;
-      --c-comms:       #d4c8f0;
-      --c-social:      #c8f0d8;
-      --c-stories:     #f0c8c8;
-      --c-events:      #f0dcc8;
-      --c-lifecycle:   #c8eef0;
-      --c-web:         #d8c8f0;
-      --c-paid:        #f0c8e8;
-      --c-pmm:         #e8f0c8;
-      --c-brand:       #f0e8c8;
-      --c-comms2:      #d4c8f0;
-      --c-default:     #e8e8e2;
-
-      --phase-tease:    #f0dcc8;
-      --phase-embargo:  #c8d4f0;
-      --phase-1:        #c8f0d8;
-      --phase-2:        #d4c8f0;
-      --phase-3:        #f0c8c8;
-      --phase-sustain:  #e8f0c8;
     }
 
     body {
@@ -60,108 +38,65 @@
       top: 0;
       z-index: 100;
     }
-    .topbar-left {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .topbar-title {
-      font-size: 14px;
-      font-weight: 600;
-      letter-spacing: -0.01em;
-    }
-    .topbar-subtitle {
-      font-size: 11px;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-    }
-    .badge {
-      background: var(--header-bg);
-      color: #fff;
-      font-size: 10px;
-      font-family: 'DM Mono', monospace;
-      padding: 3px 8px;
-      border-radius: 4px;
-    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; }
+    .topbar-title { font-size: 14px; font-weight: 600; letter-spacing: -0.01em; }
+    .topbar-subtitle { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+    .badge { background: var(--header-bg); color: #fff; font-size: 10px; font-family: 'DM Mono', monospace; padding: 3px 8px; border-radius: 4px; }
     .refresh-btn {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 6px 12px;
-      font-family: 'DM Sans', sans-serif;
-      font-size: 12px;
-      cursor: pointer;
-      color: var(--text);
-      transition: background 0.15s;
+      display: flex; align-items: center; gap: 6px;
+      background: none; border: 1px solid var(--border); border-radius: 6px;
+      padding: 6px 12px; font-family: 'DM Sans', sans-serif; font-size: 12px;
+      cursor: pointer; color: var(--text); transition: background 0.15s;
     }
     .refresh-btn:hover { background: var(--bg); }
-    .refresh-btn svg { transition: transform 0.4s; }
     .refresh-btn.spinning svg { animation: spin 0.7s linear infinite; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .last-updated { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+    /* ── STATS ── */
+    .stats-bar {
+      display: flex; gap: 24px; padding: 10px 24px;
+      border-bottom: 1px solid var(--border); background: var(--surface);
+    }
+    .stat { display: flex; flex-direction: column; gap: 1px; }
+    .stat-value { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
+    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
 
     /* ── FILTERS ── */
     .filters {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 24px;
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      overflow-x: auto;
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 24px; background: var(--surface);
+      border-bottom: 1px solid var(--border); overflow-x: auto;
     }
     .filter-label { font-size: 11px; color: var(--muted); margin-right: 4px; white-space: nowrap; }
     .filter-chip {
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 4px 12px;
-      font-size: 11px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.15s;
-      background: var(--bg);
+      border: 1px solid var(--border); border-radius: 20px;
+      padding: 4px 12px; font-size: 11px; cursor: pointer;
+      white-space: nowrap; transition: all 0.15s; background: var(--bg);
     }
-    .filter-chip.active {
-      background: var(--header-bg);
-      color: #fff;
-      border-color: var(--header-bg);
-    }
+    .filter-chip.active { background: var(--header-bg); color: #fff; border-color: var(--header-bg); }
     .filter-divider { width: 1px; height: 16px; background: var(--border); margin: 0 4px; flex-shrink: 0; }
 
     /* ── GRID WRAPPER ── */
-    .grid-wrapper {
-      overflow-x: auto;
-      padding: 20px 24px 40px;
-    }
+    .grid-wrapper { overflow-x: auto; padding: 20px 24px 40px; }
 
-    /* ── TIMELINE GRID ── */
+    /* ── TIMELINE ── */
     .timeline {
-      min-width: 1100px;
-      display: grid;
-      grid-template-columns: 90px repeat(var(--phase-count, 6), 1fr);
-      gap: 0;
+      min-width: 900px;
       border: 1px solid var(--border);
       border-radius: 10px;
       overflow: hidden;
       background: var(--surface);
-      position: relative;
-    }
-    /* Channel rows span all columns */
-    .channel-row {
-      grid-column: 1 / -1;
     }
 
-    /* Phase headers */
-    .phase-header-row {
-      display: contents;
+    /* Header row */
+    .header-row {
+      display: grid;
+      grid-template-columns: 80px repeat(var(--phase-count, 5), 1fr);
     }
     .corner-cell {
       background: var(--header-bg);
       border-right: 1px solid rgba(255,255,255,0.08);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-      min-height: 38px;
     }
     .phase-header {
       background: var(--header-bg);
@@ -170,84 +105,79 @@
       font-weight: 500;
       letter-spacing: 0.04em;
       text-transform: uppercase;
-      padding: 10px 14px;
+      padding: 10px 12px;
       border-right: 1px solid rgba(255,255,255,0.08);
-      border-bottom: 1px solid rgba(255,255,255,0.08);
       display: flex;
       flex-direction: column;
       gap: 3px;
     }
-    .phase-header-top { display: flex; align-items: center; }
-    .phase-subtitle {
-      font-size: 9px;
-      font-weight: 400;
-      letter-spacing: 0.02em;
-      text-transform: none;
-      color: rgba(255,255,255,0.45);
-      padding-left: 13px;
-    }
     .phase-header:last-child { border-right: none; }
-    .phase-dot {
-      width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; flex-shrink: 0;
-    }
+    .phase-header-top { display: flex; align-items: center; gap: 6px; }
+    .phase-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .phase-subtitle { font-size: 9px; font-weight: 400; color: rgba(255,255,255,0.4); text-transform: none; letter-spacing: 0; padding-left: 12px; }
 
-    /* Channel rows — each row is a flex container */
+    /* Channel rows */
     .channel-row {
       display: flex;
-      border-bottom: 1px solid var(--border);
+      border-top: 1px solid var(--border);
     }
-    .channel-row.last { border-bottom: none; }
     .channel-label {
+      width: 80px;
+      flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
       writing-mode: vertical-rl;
       text-orientation: mixed;
       transform: rotate(180deg);
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 600;
       letter-spacing: 0.08em;
       text-transform: uppercase;
       color: var(--muted);
       border-right: 1px solid var(--border);
-      padding: 12px 6px;
-      min-height: 90px;
-      width: 90px;
-      flex-shrink: 0;
+      padding: 10px 4px;
+      min-height: 80px;
     }
-    /* The cells area stacks span-row then stack-row */
+
+    /* The cells area: flex column containing span-row then stack-row */
     .row-cells {
       flex: 1;
       display: flex;
       flex-direction: column;
       min-width: 0;
     }
+
+    /* Spanning cards row — only shown when there are spanning tasks */
     .span-row {
+      display: grid;
+      grid-template-columns: repeat(var(--phase-count, 5), 1fr);
       border-bottom: 1px dashed var(--border);
       padding: 6px 0;
+      min-height: 0;
     }
-    .span-row:empty { display: none; }
+    .span-row:empty { display: none; padding: 0; border-bottom: none; }
+
+    /* Single-phase cards row */
+    .stack-row {
+      display: grid;
+      grid-template-columns: repeat(var(--phase-count, 5), 1fr);
+      flex: 1;
+    }
     .phase-cell {
       border-right: 1px solid var(--border);
-      padding: 8px;
+      padding: 7px;
       display: flex;
       flex-direction: column;
       gap: 5px;
-      min-height: 90px;
-      position: relative;
+      min-height: 80px;
     }
     .phase-cell.last-col { border-right: none; }
-    /* Spanning card sits outside normal flow, placed via grid-column */
-    .spanning-slot {
-      display: grid;
-      grid-template-columns: subgrid;
-      position: relative;
-    }
 
     /* Task cards */
     .task-card {
-      border-radius: 5px;
-      padding: 6px 8px;
+      border-radius: 6px;
+      padding: 7px 9px;
       font-size: 11px;
       line-height: 1.4;
       cursor: pointer;
@@ -255,73 +185,30 @@
       color: var(--text);
       display: block;
       transition: transform 0.1s, box-shadow 0.1s;
-      border: 1px solid transparent;
+      border: 1px solid rgba(0,0,0,0.06);
       word-break: break-word;
     }
-    .task-card:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-      border-color: rgba(0,0,0,0.08);
-    }
-    .task-card .card-phase-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 3px;
-      margin-top: 4px;
-    }
-    .card-phase-tag {
-      font-size: 9px;
-      padding: 1px 5px;
-      border-radius: 3px;
-      background: rgba(0,0,0,0.07);
-      font-family: 'DM Mono', monospace;
-    }
+    .task-card:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
+    .task-card .task-name { font-weight: 500; }
+    .task-card .task-meta { font-size: 9px; color: rgba(0,0,0,0.4); margin-top: 3px; font-family: 'DM Mono', monospace; }
 
-    /* Spanning tasks (multi-phase) */
-    .span-indicator {
-      font-size: 9px;
-      color: var(--muted);
-      margin-top: 2px;
-      font-family: 'DM Mono', monospace;
-    }
-
-    /* Empty state */
-    .empty-cell { color: var(--border); font-size: 10px; text-align: center; padding-top: 6px; }
-
-    /* Loading / error */
-    .status-overlay {
+    /* Spanning card padding */
+    .span-card-wrap {
+      padding: 0 7px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 12px;
-      padding: 60px 24px;
-      color: var(--muted);
+    }
+
+    /* Loading */
+    .status-overlay {
+      display: flex; flex-direction: column; align-items: center;
+      justify-content: center; gap: 12px; padding: 60px 24px; color: var(--muted);
     }
     .spinner {
       width: 28px; height: 28px;
-      border: 2px solid var(--border);
-      border-top-color: var(--text);
-      border-radius: 50%;
-      animation: spin 0.7s linear infinite;
+      border: 2px solid var(--border); border-top-color: var(--text);
+      border-radius: 50%; animation: spin 0.7s linear infinite;
     }
-    .last-updated {
-      font-size: 11px;
-      color: var(--muted);
-      font-family: 'DM Mono', monospace;
-    }
-
-    /* Stats bar */
-    .stats-bar {
-      display: flex;
-      gap: 24px;
-      padding: 10px 24px;
-      border-bottom: 1px solid var(--border);
-      background: var(--surface);
-    }
-    .stat { display: flex; flex-direction: column; gap: 1px; }
-    .stat-value { font-size: 18px; font-weight: 600; letter-spacing: -0.02em; }
-    .stat-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
   </style>
 </head>
 <body>
@@ -330,7 +217,7 @@
   <div class="topbar-left">
     <div>
       <div class="topbar-title">Spend Campaign Timeline</div>
-      <div class="topbar-subtitle">T1 - Spend Management + Standalone IO Launch</div>
+      <div class="topbar-subtitle">T1 – Spend Management + Standalone IO Launch</div>
     </div>
     <span class="badge">LIVE</span>
   </div>
@@ -346,9 +233,8 @@
 </div>
 
 <div class="stats-bar" id="statsBar" style="display:none">
-  <div class="stat"><div class="stat-value" id="statTotal">—</div><div class="stat-label">Total Tasks</div></div>
-  <div class="stat"><div class="stat-value" id="statPhased">—</div><div class="stat-label">With Phase</div></div>
-  <div class="stat"><div class="stat-value" id="statChannels">—</div><div class="stat-label">Channels Active</div></div>
+  <div class="stat"><div class="stat-value" id="statTotal">—</div><div class="stat-label">Tasks</div></div>
+  <div class="stat"><div class="stat-value" id="statChannels">—</div><div class="stat-label">Channels</div></div>
 </div>
 
 <div class="filters" id="filtersBar" style="display:none">
@@ -364,96 +250,81 @@
 </div>
 
 <script>
-// ── Config ──────────────────────────────────────────────────────────────────
 const PHASE_ORDER = ['Tease', 'Embargo', 'Phase 1', 'Phase 2', 'Phase 3', 'Sustain'];
 
 const PHASE_COLORS = {
-  'Tease':   { dot: '#f0a050', bg: '#fdf5ee' },
-  'Embargo': { dot: '#6090e0', bg: '#eef3fc' },
-  'Phase 1': { dot: '#50c878', bg: '#eefaf2' },
-  'Phase 2': { dot: '#9b70e0', bg: '#f4eefb' },
-  'Phase 3': { dot: '#e07070', bg: '#fbeeed' },
-  'Sustain': { dot: '#90b050', bg: '#f4f9eb' },
+  'Tease':   { dot: '#f0a050', bg: '#fffaf5' },
+  'Embargo': { dot: '#6090e0', bg: '#f5f8ff' },
+  'Phase 1': { dot: '#50c878', bg: '#f5fdf7' },
+  'Phase 2': { dot: '#9b70e0', bg: '#f8f5ff' },
+  'Phase 3': { dot: '#e07070', bg: '#fff5f5' },
+  'Sustain': { dot: '#90b050', bg: '#f8fdf0' },
 };
 
-// Channel → color map (matches screenshot pastel palette)
+const PHASE_SUBTITLES = {
+  'Phase 1': 'Budgets, team spend features',
+  'Phase 2': 'Artist card collaboration',
+  'Phase 3': 'Agentic cards',
+};
+
 const CHANNEL_COLORS = {
-  'Creative':              '#c8dff0',
-  'Video':                 '#c8dff0',
-  'Brand':                 '#c8dff0',
-  'Communications':        '#d4c8f0',
-  'Social':                '#c8f0d8',
-  'Stories':               '#f0c8c8',
-  'Events':                '#f0dcc8',
-  'Community':             '#f0dcc8',
-  'Lifecycle':             '#c8eef0',
-  'FEM':                   '#e0d8f8',
+  'Creative': '#c8dff0', 'Video': '#c8dff0', 'Brand': '#c8dff0', 'Design': '#cce8f4',
+  'Communications': '#d4c8f0', 'PMM': '#e8f0c8', 'Copy': '#d8c8f0',
+  'Social': '#c8f0d8',
+  'Stories': '#f0c8c8',
+  'Events': '#f0dcc8', 'Community': '#f0dcc8',
+  'Lifecycle': '#c8eef0',
+  'FEM': '#e0d8f8', 'In product/UX': '#e0d8f8',
   'Performance Marketing': '#f0c8e8',
-  'PMM':                   '#e8f0c8',
-  'Design':                '#cce8f4',
-  'Copy':                  '#d8c8f0',
-  'Data Science':          '#e8f4c8',
 };
 
-// Which channels map to which "display row"
 const CHANNEL_ROWS = [
-  { label: 'Creative',   matches: ['Creative','Video','Brand','Design'] },
-  { label: 'Comms',      matches: ['Communications','PMM','Copy'] },
-  { label: 'Social',     matches: ['Social'] },
-  { label: 'Stories',    matches: ['Stories'] },
-  { label: 'Events',     matches: ['Events','Community'] },
-  { label: 'Lifecycle',  matches: ['Lifecycle'] },
-  { label: 'Web / FEM',  matches: ['FEM','In product/UX'] },
-  { label: 'Paid Social',matches: ['Performance Marketing'] },
+  { label: 'Creative',    matches: ['Creative','Video','Brand','Design'] },
+  { label: 'Comms',       matches: ['Communications','PMM','Copy'] },
+  { label: 'Social',      matches: ['Social'] },
+  { label: 'Stories',     matches: ['Stories'] },
+  { label: 'Events',      matches: ['Events','Community'] },
+  { label: 'Lifecycle',   matches: ['Lifecycle'] },
+  { label: 'Web / FEM',   matches: ['FEM','In product/UX'] },
+  { label: 'Paid Social', matches: ['Performance Marketing'] },
 ];
 
-// ── State ────────────────────────────────────────────────────────────────────
 let allTasks = [];
-let activeChannels = new Set();
-let activePhases = new Set();
-let allChannels = [];
 let allPhases = [];
+let activePhases = new Set();
+let activeRowFilters = new Set(CHANNEL_ROWS.map(r => r.label));
 
-// ── Fetch ────────────────────────────────────────────────────────────────────
 async function loadTasks() {
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('spinning');
   try {
     const res = await fetch('/api/tasks');
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
     const data = await res.json();
-    if (data.error) throw new Error(data.error + (data.stack ? '\n' + data.stack : ''));
+    if (data.error) throw new Error(data.error);
     allTasks = data.tasks;
     processData();
     document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
   } catch (e) {
     document.getElementById('gridWrapper').innerHTML =
-      `<div class="status-overlay"><span style="color:#c05">Error: ${e.message}</span><small>Check ASANA_TOKEN env var</small></div>`;
+      `<div class="status-overlay"><span style="color:#c05">Error: ${e.message}</span></div>`;
   } finally {
     btn.classList.remove('spinning');
   }
 }
 
 function processData() {
-  // Collect unique channels and phases from actual data
-  const channelSet = new Set();
   const phaseSet = new Set();
+  const channelSet = new Set();
   allTasks.forEach(t => {
-    if (t.channel) channelSet.add(t.channel);
     t.phases.forEach(p => phaseSet.add(p));
+    if (t.channel) channelSet.add(t.channel);
   });
-  allChannels = [...channelSet].sort();
   allPhases = PHASE_ORDER.filter(p => phaseSet.has(p));
-
-  // Default: show all
-  activeChannels = new Set(allChannels);
   activePhases = new Set(allPhases);
 
-  // Stats
-  const statsBar = document.getElementById('statsBar');
-  statsBar.style.display = 'flex';
+  document.getElementById('statsBar').style.display = 'flex';
   document.getElementById('statTotal').textContent = allTasks.length;
-  document.getElementById('statPhased').textContent = allTasks.filter(t => t.phases.length > 0).length;
   document.getElementById('statChannels').textContent = channelSet.size;
 
   renderFilters();
@@ -465,16 +336,16 @@ function renderFilters() {
 
   const cf = document.getElementById('channelFilters');
   cf.innerHTML = '';
-  // Show row-level filters
   CHANNEL_ROWS.forEach(row => {
-    const hasAny = allTasks.some(t => row.matches.includes(t.channel));
-    if (!hasAny) return;
+    if (!allTasks.some(t => row.matches.includes(t.channel))) return;
     const chip = document.createElement('button');
     chip.className = 'filter-chip active';
-    chip.dataset.type = 'channel';
-    chip.dataset.value = row.label;
     chip.textContent = row.label;
-    chip.onclick = () => toggleChannelFilter(row.label, chip);
+    chip.onclick = () => {
+      if (activeRowFilters.has(row.label)) { activeRowFilters.delete(row.label); chip.classList.remove('active'); }
+      else { activeRowFilters.add(row.label); chip.classList.add('active'); }
+      renderGrid();
+    };
     cf.appendChild(chip);
   });
 
@@ -483,63 +354,47 @@ function renderFilters() {
   allPhases.forEach(phase => {
     const chip = document.createElement('button');
     chip.className = 'filter-chip active';
-    chip.dataset.type = 'phase';
-    chip.dataset.value = phase;
     chip.textContent = phase;
-    chip.onclick = () => togglePhaseFilter(phase, chip);
+    chip.onclick = () => {
+      if (activePhases.has(phase)) { activePhases.delete(phase); chip.classList.remove('active'); }
+      else { activePhases.add(phase); chip.classList.add('active'); }
+      renderGrid();
+    };
     pf.appendChild(chip);
   });
 }
 
-// Track active row filters separately
-let activeRowFilters = new Set(CHANNEL_ROWS.map(r => r.label));
-
-function toggleChannelFilter(label, chip) {
-  if (activeRowFilters.has(label)) { activeRowFilters.delete(label); chip.classList.remove('active'); }
-  else { activeRowFilters.add(label); chip.classList.add('active'); }
-  renderGrid();
-}
-
-function togglePhaseFilter(phase, chip) {
-  if (activePhases.has(phase)) { activePhases.delete(phase); chip.classList.remove('active'); }
-  else { activePhases.add(phase); chip.classList.add('active'); }
-  renderGrid();
-}
-
-// ── Render ───────────────────────────────────────────────────────────────────
 function renderGrid() {
   const visiblePhases = PHASE_ORDER.filter(p => activePhases.has(p) && allPhases.includes(p));
   const visibleRows = CHANNEL_ROWS.filter(row => {
     if (!activeRowFilters.has(row.label)) return false;
-    return allTasks.some(t => row.matches.includes(t.channel));
+    return allTasks.some(t => row.matches.includes(t.channel) && t.phases.some(p => visiblePhases.includes(p)));
   });
 
-  if (visiblePhases.length === 0 || visibleRows.length === 0) {
+  if (!visiblePhases.length || !visibleRows.length) {
     document.getElementById('gridWrapper').innerHTML = '<div class="status-overlay"><span>No matching tasks</span></div>';
     return;
   }
 
+  const n = visiblePhases.length;
   const wrapper = document.getElementById('gridWrapper');
   wrapper.innerHTML = '';
 
-  const grid = document.createElement('div');
-  grid.className = 'timeline';
-  grid.style.setProperty('--phase-count', visiblePhases.length);
+  const timeline = document.createElement('div');
+  timeline.className = 'timeline';
 
-  // ── Header row ──
+  // ── Header ──
+  const headerRow = document.createElement('div');
+  headerRow.className = 'header-row';
+  headerRow.style.setProperty('--phase-count', n);
+
   const corner = document.createElement('div');
   corner.className = 'corner-cell';
-  grid.appendChild(corner);
-
-  const PHASE_SUBTITLES = {
-    'Phase 1': 'Budgets, team spend features',
-    'Phase 2': 'Artist card collaboration',
-    'Phase 3': 'Agentic cards',
-  };
+  headerRow.appendChild(corner);
 
   visiblePhases.forEach(phase => {
-    const header = document.createElement('div');
-    header.className = 'phase-header';
+    const h = document.createElement('div');
+    h.className = 'phase-header';
     const top = document.createElement('div');
     top.className = 'phase-header-top';
     const dot = document.createElement('span');
@@ -547,129 +402,104 @@ function renderGrid() {
     dot.style.background = PHASE_COLORS[phase]?.dot || '#ccc';
     top.appendChild(dot);
     top.appendChild(document.createTextNode(phase));
-    header.appendChild(top);
+    h.appendChild(top);
     if (PHASE_SUBTITLES[phase]) {
       const sub = document.createElement('div');
       sub.className = 'phase-subtitle';
       sub.textContent = PHASE_SUBTITLES[phase];
-      header.appendChild(sub);
+      h.appendChild(sub);
     }
-    grid.appendChild(header);
+    headerRow.appendChild(h);
   });
+  timeline.appendChild(headerRow);
 
   // ── Channel rows ──
-  // Strategy: each row is a full-width flex row.
-  // The cells area is a CSS grid. Cards that span phases use grid-column: span N.
-  // To allow stacking (multiple cards in same column), each column is a flex column
-  // and spanning cards sit in a separate "overlay" row of the grid above the per-column stacks.
-  //
-  // Layout per row-cells grid:
-  //   Row 1: spanning cards only (grid-column: startCol / endCol+1), empty cells otherwise
-  //   Row 2+: single-phase cards stacked per column
-
-  visibleRows.forEach((row, rowIdx) => {
+  visibleRows.forEach(row => {
     const rowEl = document.createElement('div');
-    rowEl.className = 'channel-row' + (rowIdx === visibleRows.length - 1 ? ' last' : '');
+    rowEl.className = 'channel-row';
 
-    const label = document.createElement('div');
-    label.className = 'channel-label';
-    label.textContent = row.label;
-    rowEl.appendChild(label);
+    const labelEl = document.createElement('div');
+    labelEl.className = 'channel-label';
+    labelEl.textContent = row.label;
+    rowEl.appendChild(labelEl);
 
     const cellsEl = document.createElement('div');
     cellsEl.className = 'row-cells';
-    cellsEl.style.setProperty('--phase-count', visiblePhases.length);
 
     const rowTasks = allTasks.filter(t =>
       row.matches.includes(t.channel) &&
       t.phases.some(p => visiblePhases.includes(p))
     );
 
-    // Split tasks: spanning (contiguous multi-phase) vs single
-    const spanningTasks = [];
-    const singleTasks = []; // keyed by first phase index
+    // Categorise: spanning (contiguous multi-phase) vs single-column
+    const spanTasks = [];   // { task, start, end }
+    const singleTasks = []; // { task, colIdx }
 
     rowTasks.forEach(task => {
       const idxs = task.phases
         .map(p => visiblePhases.indexOf(p))
         .filter(i => i !== -1)
         .sort((a, b) => a - b);
-      if (idxs.length === 0) return;
+      if (!idxs.length) return;
 
-      const isContiguous = idxs.length > 1 && idxs.every((v, i) => i === 0 || v === idxs[i-1] + 1);
-      if (isContiguous) {
-        spanningTasks.push({ task, start: idxs[0], end: idxs[idxs.length - 1] });
+      const contiguous = idxs.length > 1 &&
+        idxs.every((v, i) => i === 0 || v === idxs[i-1] + 1);
+
+      if (contiguous) {
+        spanTasks.push({ task, start: idxs[0], end: idxs[idxs.length - 1] });
       } else {
+        // Place in each individual column
         idxs.forEach(idx => singleTasks.push({ task, colIdx: idx }));
       }
     });
 
-    // Build the grid structure:
-    // If there are spanning tasks, add a spanning row first
-    if (spanningTasks.length > 0) {
-      const spanRow = document.createElement('div');
-      spanRow.className = 'span-row';
-      spanRow.style.cssText = `
-        display: grid;
-        grid-template-columns: repeat(${visiblePhases.length}, 1fr);
-        grid-column: 1 / -1;
-      `;
+    // ── Span row ──
+    const spanRow = document.createElement('div');
+    spanRow.className = 'span-row';
+    spanRow.style.setProperty('--phase-count', n);
 
-      spanningTasks.forEach(({ task, start, end }) => {
-        // Invisible spacer cells before this task
-        if (start > 0) {
-          const spacer = document.createElement('div');
-          spacer.style.gridColumn = `1 / ${start + 1}`;
-          spanRow.appendChild(spacer);
-        }
+    spanTasks.forEach(({ task, start, end }) => {
+      const wrap = document.createElement('div');
+      wrap.className = 'span-card-wrap';
+      wrap.style.gridColumn = `${start + 1} / ${end + 2}`;
 
-        const card = makeCard(task, CHANNEL_COLORS);
-        card.style.gridColumn = `${start + 1} / ${end + 2}`;
-        // Add subtle right-arrow indicator for span
-        const spanLabel = document.createElement('div');
-        spanLabel.style.cssText = 'font-size:9px;color:rgba(0,0,0,0.4);margin-top:3px;font-family:DM Mono,monospace;';
-        spanLabel.textContent = visiblePhases.slice(start, end + 1).join(' → ');
-        card.appendChild(spanLabel);
-        spanRow.appendChild(card);
+      const card = makeCard(task);
+      const spanMeta = document.createElement('div');
+      spanMeta.className = 'task-meta';
+      spanMeta.textContent = visiblePhases.slice(start, end + 1).join(' → ');
+      card.appendChild(spanMeta);
+      wrap.appendChild(card);
+      spanRow.appendChild(wrap);
+    });
 
-        // Spacer after if needed
-        if (end < visiblePhases.length - 1) {
-          const spacerAfter = document.createElement('div');
-          spacerAfter.style.gridColumn = `${end + 2} / ${visiblePhases.length + 1}`;
-          spanRow.appendChild(spacerAfter);
-        }
-      });
-      cellsEl.appendChild(spanRow);
-    }
+    if (spanTasks.length) cellsEl.appendChild(spanRow);
 
-    // Per-column stacks row
+    // ── Stack row ──
     const stackRow = document.createElement('div');
     stackRow.className = 'stack-row';
-    stackRow.style.cssText = `
-      display: grid;
-      grid-template-columns: repeat(${visiblePhases.length}, 1fr);
-      grid-column: 1 / -1;
-    `;
+    stackRow.style.setProperty('--phase-count', n);
 
     visiblePhases.forEach((phase, colIdx) => {
-      const col = document.createElement('div');
-      col.className = 'phase-cell' + (colIdx === visiblePhases.length - 1 ? ' last-col' : '');
-      if (PHASE_COLORS[phase]) col.style.background = PHASE_COLORS[phase].bg;
+      const cell = document.createElement('div');
+      cell.className = 'phase-cell' + (colIdx === n - 1 ? ' last-col' : '');
+      if (PHASE_COLORS[phase]) cell.style.background = PHASE_COLORS[phase].bg;
 
-      const colTasks = singleTasks.filter(s => s.colIdx === colIdx);
-      colTasks.forEach(({ task }) => col.appendChild(makeCard(task, CHANNEL_COLORS)));
-      stackRow.appendChild(col);
+      singleTasks
+        .filter(s => s.colIdx === colIdx)
+        .forEach(({ task }) => cell.appendChild(makeCard(task)));
+
+      stackRow.appendChild(cell);
     });
 
     cellsEl.appendChild(stackRow);
     rowEl.appendChild(cellsEl);
-    grid.appendChild(rowEl);
+    timeline.appendChild(rowEl);
   });
 
-  wrapper.appendChild(grid);
+  wrapper.appendChild(timeline);
 }
 
-function makeCard(task, CHANNEL_COLORS) {
+function makeCard(task) {
   const card = document.createElement('a');
   card.className = 'task-card';
   card.href = task.url;
@@ -677,28 +507,26 @@ function makeCard(task, CHANNEL_COLORS) {
   card.rel = 'noopener noreferrer';
   card.style.background = CHANNEL_COLORS[task.channel] || '#e8e8e2';
 
-  const nameEl = document.createElement('div');
-  nameEl.textContent = task.name;
-  card.appendChild(nameEl);
+  const name = document.createElement('div');
+  name.className = 'task-name';
+  name.textContent = task.name;
+  card.appendChild(name);
 
   if (task.due_on) {
-    const dateEl = document.createElement('div');
-    dateEl.style.cssText = 'font-size:9px;color:rgba(0,0,0,0.45);margin-top:3px;font-family:DM Mono,monospace;';
-    dateEl.textContent = formatDate(task.due_on);
-    card.appendChild(dateEl);
+    const meta = document.createElement('div');
+    meta.className = 'task-meta';
+    meta.textContent = formatDate(task.due_on);
+    card.appendChild(meta);
   }
   return card;
 }
 
 function formatDate(d) {
-  const [y, m, day] = d.split('-');
-  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  return `${months[parseInt(m)-1]} ${parseInt(day)}`;
+  const [, m, day] = d.split('-');
+  return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1] + ' ' + +day;
 }
 
-// ── Init ─────────────────────────────────────────────────────────────────────
 loadTasks();
-// Auto-refresh every 2 minutes
 setInterval(loadTasks, 120000);
 </script>
 </body>
