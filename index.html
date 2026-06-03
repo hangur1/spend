@@ -146,6 +146,11 @@
       border-radius: 10px;
       overflow: hidden;
       background: var(--surface);
+      position: relative;
+    }
+    /* Channel rows span all columns */
+    .channel-row {
+      grid-column: 1 / -1;
     }
 
     /* Phase headers */
@@ -186,10 +191,12 @@
       width: 6px; height: 6px; border-radius: 50%; margin-right: 7px; flex-shrink: 0;
     }
 
-    /* Channel rows */
+    /* Channel rows — each row is a flex container */
     .channel-row {
-      display: contents;
+      display: flex;
+      border-bottom: 1px solid var(--border);
     }
+    .channel-row.last { border-bottom: none; }
     .channel-label {
       display: flex;
       align-items: center;
@@ -203,24 +210,34 @@
       text-transform: uppercase;
       color: var(--muted);
       border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
       padding: 12px 6px;
       min-height: 90px;
+      width: 90px;
+      flex-shrink: 0;
     }
-    .channel-label.last { border-bottom: none; }
+    /* The cells area is a CSS grid that mirrors the phase columns */
+    .row-cells {
+      flex: 1;
+      display: grid;
+      grid-template-columns: repeat(var(--phase-count, 6), 1fr);
+      min-width: 0;
+    }
     .phase-cell {
       border-right: 1px solid var(--border);
-      border-bottom: 1px solid var(--border);
       padding: 8px;
       display: flex;
       flex-direction: column;
       gap: 5px;
       min-height: 90px;
-      vertical-align: top;
+      position: relative;
     }
-    .phase-cell:last-child { border-right: none; }
-    .channel-row:last-child .phase-cell { border-bottom: none; }
-    .channel-row:last-child .channel-label { border-bottom: none; }
+    .phase-cell.last-col { border-right: none; }
+    /* Spanning card sits outside normal flow, placed via grid-column */
+    .spanning-slot {
+      display: grid;
+      grid-template-columns: subgrid;
+      position: relative;
+    }
 
     /* Task cards */
     .task-card {
@@ -537,63 +554,145 @@ function renderGrid() {
 
   // Channel rows
   visibleRows.forEach((row, rowIdx) => {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'channel-row' + (rowIdx === visibleRows.length - 1 ? ' last' : '');
+    // need full width for the grid
+    rowEl.style.gridColumn = '1 / -1';
+
     const label = document.createElement('div');
-    label.className = 'channel-label' + (rowIdx === visibleRows.length - 1 ? ' last' : '');
+    label.className = 'channel-label';
     label.textContent = row.label;
-    grid.appendChild(label);
+    rowEl.appendChild(label);
 
-    // Get tasks for this row
-    const rowTasks = allTasks.filter(t => row.matches.includes(t.channel));
+    const cellsEl = document.createElement('div');
+    cellsEl.className = 'row-cells';
+    cellsEl.style.setProperty('--phase-count', visiblePhases.length);
 
-    visiblePhases.forEach((phase, colIdx) => {
+    // Get tasks for this row that have at least one visible phase
+    const rowTasks = allTasks.filter(t =>
+      row.matches.includes(t.channel) &&
+      t.phases.some(p => visiblePhases.includes(p))
+    );
+
+    // Track which tasks have already been rendered (for spanning ones)
+    const renderedTaskGids = new Set();
+
+    // Build empty cells first
+    const cells = visiblePhases.map((phase, colIdx) => {
       const cell = document.createElement('div');
-      cell.className = 'phase-cell';
-      if (colIdx === visiblePhases.length - 1) cell.style.borderRight = 'none';
-      if (rowIdx === visibleRows.length - 1) cell.style.borderBottom = 'none';
-      // Apply subtle phase tint
+      cell.className = 'phase-cell' + (colIdx === visiblePhases.length - 1 ? ' last-col' : '');
       if (PHASE_COLORS[phase]) cell.style.background = PHASE_COLORS[phase].bg;
+      cell.dataset.phaseIdx = colIdx;
+      cellsEl.appendChild(cell);
+      return cell;
+    });
 
-      const phaseTasks = rowTasks.filter(t => t.phases.includes(phase));
+    // Place tasks — spanning ones go into their first phase cell but span columns
+    rowTasks.forEach(task => {
+      if (renderedTaskGids.has(task.gid)) return;
 
-      if (phaseTasks.length === 0) {
-        cell.innerHTML = '';
-      } else {
-        phaseTasks.forEach(task => {
-          const card = document.createElement('a');
-          card.className = 'task-card';
-          card.href = task.url;
-          card.target = '_blank';
-          card.rel = 'noopener noreferrer';
+      // Figure out which visible phases this task covers, and if they are contiguous
+      const taskPhaseIdxs = task.phases
+        .map(p => visiblePhases.indexOf(p))
+        .filter(i => i !== -1)
+        .sort((a, b) => a - b);
 
-          const color = CHANNEL_COLORS[task.channel] || '#e8e8e2';
-          card.style.background = color;
+      if (taskPhaseIdxs.length === 0) return;
+      renderedTaskGids.add(task.gid);
 
-          const nameEl = document.createElement('div');
-          nameEl.textContent = task.name;
-          card.appendChild(nameEl);
+      const firstIdx = taskPhaseIdxs[0];
+      const lastIdx = taskPhaseIdxs[taskPhaseIdxs.length - 1];
+      // Check contiguous
+      const isContiguous = taskPhaseIdxs.every((idx, i) => i === 0 || idx === taskPhaseIdxs[i-1] + 1);
+      const spanCount = isContiguous ? (lastIdx - firstIdx + 1) : 1;
 
-          // If task spans multiple phases, show indicator
-          if (task.phases.length > 1) {
-            const spanEl = document.createElement('div');
-            spanEl.className = 'span-indicator';
-            spanEl.textContent = '→ ' + task.phases.join(', ');
-            card.appendChild(spanEl);
-          }
+      const card = document.createElement('a');
+      card.className = 'task-card';
+      card.href = task.url;
+      card.target = '_blank';
+      card.rel = 'noopener noreferrer';
 
-          // Due date
-          if (task.due_on) {
-            const dateEl = document.createElement('div');
-            dateEl.style.cssText = 'font-size:9px;color:rgba(0,0,0,0.45);margin-top:3px;font-family:DM Mono,monospace;';
-            dateEl.textContent = formatDate(task.due_on);
-            card.appendChild(dateEl);
-          }
+      const color = CHANNEL_COLORS[task.channel] || '#e8e8e2';
+      card.style.background = color;
 
-          cell.appendChild(card);
-        });
+      if (spanCount > 1) {
+        // Spans multiple columns — use grid-column on the card itself
+        // Place it in the first cell but make it overflow via absolute/grid magic
+        // Easier: give card grid-column span on a wrapper inside the cell
+        card.style.gridColumn = `span ${spanCount}`;
+        card.style.zIndex = '2';
       }
 
-      grid.appendChild(cell);
+      const nameEl = document.createElement('div');
+      nameEl.textContent = task.name;
+      card.appendChild(nameEl);
+
+      if (task.due_on) {
+        const dateEl = document.createElement('div');
+        dateEl.style.cssText = 'font-size:9px;color:rgba(0,0,0,0.45);margin-top:3px;font-family:DM Mono,monospace;';
+        dateEl.textContent = formatDate(task.due_on);
+        card.appendChild(dateEl);
+      }
+
+      if (spanCount > 1) {
+        // Wrap in a spanning grid overlay across those cells
+        // Inject a subgrid wrapper that sits across the cells
+        const wrapper = document.createElement('div');
+        wrapper.style.cssText = `
+          grid-column: ${firstIdx + 1} / ${lastIdx + 2};
+          grid-row: 1;
+          display: flex;
+          padding: 8px;
+          pointer-events: none;
+          position: relative;
+          z-index: 2;
+        `;
+        card.style.flex = '1';
+        card.style.pointerEvents = 'auto';
+        wrapper.appendChild(card);
+
+        // We need to place this wrapper as an overlay on the cells grid
+        // Create an overlay grid that sits on top of row-cells
+        // Instead, append to a special overlay layer
+        // Simpler approach: use a position:relative container
+        cellsEl.style.position = 'relative';
+        const overlay = document.createElement('div');
+        overlay.style.cssText = `
+          position: absolute;
+          top: 0; left: 0; right: 0; bottom: 0;
+          display: grid;
+          grid-template-columns: repeat(${visiblePhases.length}, 1fr);
+          pointer-events: none;
+          z-index: 2;
+        `;
+        overlay.dataset.overlayFor = task.gid;
+
+        const spacer = document.createElement('div');
+        spacer.style.cssText = `grid-column: 1 / ${firstIdx + 1}; grid-row: 1;`;
+
+        const cardWrapper = document.createElement('div');
+        cardWrapper.style.cssText = `
+          grid-column: ${firstIdx + 1} / ${lastIdx + 2};
+          grid-row: 1;
+          padding: 8px;
+          display: flex;
+          pointer-events: none;
+          align-items: flex-start;
+        `;
+        card.style.flex = '1';
+        card.style.minWidth = '0';
+        card.style.pointerEvents = 'auto';
+        cardWrapper.appendChild(card);
+        if (firstIdx > 0) overlay.appendChild(spacer);
+        overlay.appendChild(cardWrapper);
+        cellsEl.appendChild(overlay);
+      } else {
+        cells[firstIdx].appendChild(card);
+      }
     });
+
+    rowEl.appendChild(cellsEl);
+    grid.appendChild(rowEl);
   });
 
   wrapper.appendChild(grid);
