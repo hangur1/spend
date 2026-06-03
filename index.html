@@ -169,7 +169,17 @@
       border-right: 1px solid rgba(255,255,255,0.08);
       border-bottom: 1px solid rgba(255,255,255,0.08);
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .phase-header-top { display: flex; align-items: center; }
+    .phase-subtitle {
+      font-size: 9px;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+      text-transform: none;
+      color: rgba(255,255,255,0.45);
+      padding-left: 13px;
     }
     .phase-header:last-child { border-right: none; }
     .phase-dot {
@@ -499,14 +509,29 @@ function renderGrid() {
   corner.className = 'corner-cell';
   grid.appendChild(corner);
 
+  const PHASE_SUBTITLES = {
+    'Phase 1': 'Budgets, team spend features',
+    'Phase 2': 'Artist card collaboration',
+    'Phase 3': 'Agentic cards',
+  };
+
   visiblePhases.forEach(phase => {
     const header = document.createElement('div');
     header.className = 'phase-header';
+    const top = document.createElement('div');
+    top.className = 'phase-header-top';
     const dot = document.createElement('span');
     dot.className = 'phase-dot';
     dot.style.background = PHASE_COLORS[phase]?.dot || '#ccc';
-    header.appendChild(dot);
-    header.appendChild(document.createTextNode(phase));
+    top.appendChild(dot);
+    top.appendChild(document.createTextNode(phase));
+    header.appendChild(top);
+    if (PHASE_SUBTITLES[phase]) {
+      const sub = document.createElement('div');
+      sub.className = 'phase-subtitle';
+      sub.textContent = PHASE_SUBTITLES[phase];
+      header.appendChild(sub);
+    }
     grid.appendChild(header);
   });
 
