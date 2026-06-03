@@ -459,11 +459,29 @@ function renderGrid() {
     const spanRow = document.createElement('div');
     spanRow.className = 'span-row';
     spanRow.style.setProperty('--phase-count', n);
+    spanRow.style.position = 'relative';
+
+    // Add colored column backgrounds for the span row
+    visiblePhases.forEach((phase, colIdx) => {
+      const bg = document.createElement('div');
+      bg.style.cssText = `
+        position: absolute;
+        top: 0; bottom: 0;
+        left: calc(${colIdx} * (100% / ${n}));
+        width: calc(100% / ${n});
+        background: ${PHASE_COLORS[phase]?.bg || '#fff'};
+        z-index: 0;
+        ${colIdx > 0 ? 'border-left: 1px solid var(--border);' : ''}
+      `;
+      spanRow.appendChild(bg);
+    });
 
     spanTasks.forEach(({ task, start, end }) => {
       const wrap = document.createElement('div');
       wrap.className = 'span-card-wrap';
       wrap.style.gridColumn = `${start + 1} / ${end + 2}`;
+      wrap.style.position = 'relative';
+      wrap.style.zIndex = '1';
 
       const card = makeCard(task);
       card.style.flex = '1';
