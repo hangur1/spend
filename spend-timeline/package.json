@@ -1,6 +1,0 @@
-{
-  "name": "spend-campaign-timeline",
-  "version": "1.0.0",
-  "description": "Live campaign timeline dashboard pulling from Asana",
-  "engines": { "node": ">=18" }
-}
