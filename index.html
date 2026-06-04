@@ -97,6 +97,12 @@
     .hot-text { font-size: 12px; line-height: 1.5; color: var(--text); }
 
 
+
+    .dlv-progress-wrap { display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0; }
+    .dlv-progress-bar { height: 4px; border-radius: 2px; background: var(--border); flex: 1; max-width: 80px; overflow: hidden; }
+    .dlv-progress-fill { height: 100%; border-radius: 2px; background: #50c878; transition: width 0.3s; }
+    .dlv-progress-label { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; white-space: nowrap; }
+
     /* ── DELIVERABLES LIVE TAB ── */
     .dlv-wrap { padding: 24px; max-width: 1000px; }
     .dlv-section { margin-bottom: 28px; }
@@ -112,7 +118,7 @@
       border-radius: 6px; transition: background 0.12s;
     }
     .dlv-row-header:hover { background: var(--bg); }
-    .dlv-chevron { color: var(--muted); transition: transform 0.18s; display: flex; align-items: center; justify-content: center; transform: rotate(90deg); }
+    .dlv-chevron { color: var(--muted); transition: transform 0.18s; display: flex; align-items: center; justify-content: center; }
     .dlv-chevron svg { display: block; }
     .dlv-name { font-size: 13px; font-weight: 500; }
     .dlv-channel { font-size: 10px; padding: 2px 8px; border-radius: 20px; border: 1px solid var(--border); color: var(--muted); white-space: nowrap; text-align: center; background: var(--bg); }
@@ -583,13 +589,21 @@ function renderDeliverables(tasks) {
         html += `<div class="dlv-row">
           <div class="dlv-row-header" onclick="dlvToggle(this)">
             <span class="dlv-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <a href="${task.url}" target="_blank" style="text-decoration:none;color:inherit" onclick="event.stopPropagation()"><span class="dlv-name">${taskDisplayName}</span></a>
+            <div class="dlv-progress-wrap" onclick="event.stopPropagation()">
+              <a href="${task.url}" target="_blank" style="text-decoration:none;color:inherit"><span class="dlv-name">${taskDisplayName}</span></a>
+              ${task.subtasks && task.subtasks.length ? (() => {
+                const total = task.subtasks.length;
+                const done = task.subtasks.filter(s => s.completed).length;
+                const pct = Math.round((done / total) * 100);
+                return `<div class="dlv-progress-bar"><div class="dlv-progress-fill" style="width:${pct}%"></div></div><span class="dlv-progress-label">${done}/${total}</span>`;
+              })() : ''}
+            </div>
             <span class="dlv-channel">${task.channel || '—'}</span>
             ${task.status ? `<span class="dlv-status ${statusCls}">${task.status}</span>` : '<span class="dlv-status not-started">Not Started</span>'}
             ${deliveryLbl ? `<span class="dlv-delivery ${deliveryCls}">${deliveryLbl}</span>` : '<span class="dlv-delivery unknown">—</span>'}
             <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap">${dueStr}</span>
           </div>
-          <div class="dlv-subtasks${task.subtasks && task.subtasks.length ? '' : ' closed'}">`;
+          <div class="dlv-subtasks closed">`;
 
         if (task.subtasks && task.subtasks.length) {
           task.subtasks.forEach(sub => {
