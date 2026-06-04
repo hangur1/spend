@@ -923,10 +923,12 @@ const FUNNEL_SECTIONS = [
 ];
 
 function taskFunnel(task) {
-  const s = (task.section || '').toLowerCase();
-  if (s.includes('upper')) return 'upper';
-  if (s.includes('lower')) return 'lower';
-  // fallback: use channel heuristics
+  // Use the Funnel custom field from Asana as source of truth
+  const f = (task.funnel || '').toLowerCase();
+  if (f.includes('upper')) return 'upper';
+  if (f.includes('lower')) return 'lower';
+  if (f.includes('creative')) return 'upper';
+  // fallback: channel heuristics
   const upper = ['Creative','Video','Brand','Design','Social','Stories','Events','Community','Communications','Copy'];
   if (upper.includes(task.channel)) return 'upper';
   return 'lower';
