@@ -43,7 +43,7 @@
     .tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
 
     /* ── DELIVERABLES TAB ── */
-    .del-wrap { padding: 24px; max-width: 900px; }
+    .del-wrap { padding: 24px; max-width: 960px; }
     .del-section { margin-bottom: 28px; }
     .del-section-header {
       display: flex; align-items: center; gap: 8px;
@@ -56,7 +56,7 @@
     }
     .del-row { border-bottom: 1px solid var(--border); }
     .del-row-header {
-      display: grid; grid-template-columns: 24px 1fr 110px 120px 44px;
+      display: grid; grid-template-columns: 24px 1fr 140px 120px 44px;
       align-items: center; gap: 8px;
       padding: 9px 6px; cursor: pointer; border-radius: 6px;
       transition: background 0.12s;
@@ -65,6 +65,7 @@
     .del-chevron {
       font-size: 11px; color: var(--muted);
       transition: transform 0.18s; display: flex; align-items: center; justify-content: center;
+      transform: rotate(90deg);
     }
     .del-chevron svg { display: block; }
     .del-name { font-size: 13px; font-weight: 500; }
@@ -84,16 +85,18 @@
       background: #fffaeb; color: #8a6000; text-align: center; white-space: nowrap;
       border: 1px solid #ffe9a0;
     }
-    .del-components { display: none; padding: 0 6px 10px 32px; }
-    .del-components.open { display: block; }
+    .del-components { display: block; padding: 0 6px 10px 32px; }
+    .del-components.closed { display: none; }
     .del-comp-row {
-      display: grid; grid-template-columns: 1fr 130px;
+      display: grid; grid-template-columns: 1fr 140px 100px;
       gap: 8px; padding: 5px 0;
       border-bottom: 1px solid var(--border); align-items: center;
     }
     .del-comp-row:last-child { border-bottom: none; }
     .del-comp-name { font-size: 12px; color: var(--muted); }
+    .del-comp-team { font-size: 11px; color: #bbb; font-style: italic; }
     .del-comp-owner { font-size: 11px; color: #aaa; font-family: 'DM Mono', monospace; }
+    .del-comp-note { font-size: 10px; color: #bbb; font-family: 'DM Mono', monospace; grid-column: 1 / -1; padding-bottom: 2px; }
 
     /* ── TOP BAR ── */
     .topbar {
@@ -184,46 +187,23 @@
     .phase-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
     .phase-subtitle { font-size: 9px; font-weight: 400; color: rgba(255,255,255,0.4); text-transform: none; letter-spacing: 0; padding-left: 12px; }
 
-    .channel-row {
-      display: flex;
-      border-top: 1px solid var(--border);
-    }
+    .channel-row { display: flex; border-top: 1px solid var(--border); }
     .channel-label {
-      width: 80px;
-      flex-shrink: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      transform: rotate(180deg);
-      font-size: 9px;
-      font-weight: 600;
-      letter-spacing: 0.08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border-right: 1px solid var(--border);
-      padding: 10px 4px;
-      min-height: 80px;
+      width: 80px; flex-shrink: 0;
+      display: flex; align-items: center; justify-content: center;
+      writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+      font-size: 9px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+      color: var(--muted); border-right: 1px solid var(--border);
+      padding: 10px 4px; min-height: 80px;
     }
-
-    .row-cells {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      min-width: 0;
-    }
-
+    .row-cells { flex: 1; display: flex; flex-direction: column; min-width: 0; }
     .span-row {
       display: grid;
       grid-template-columns: repeat(var(--phase-count, 5), 1fr);
       border-bottom: 1px dashed var(--border);
-      padding: 6px 0;
-      min-height: 0;
-      background: transparent;
+      padding: 6px 0; min-height: 0; background: transparent;
     }
     .span-row:empty { display: none; padding: 0; border-bottom: none; }
-
     .stack-row {
       display: grid;
       grid-template-columns: repeat(var(--phase-count, 5), 1fr);
@@ -231,38 +211,19 @@
     }
     .phase-cell {
       border-right: 1px solid var(--border);
-      padding: 7px;
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      min-height: 80px;
+      padding: 7px; display: flex; flex-direction: column; gap: 5px; min-height: 80px;
     }
     .phase-cell.last-col { border-right: none; }
-
     .task-card {
-      border-radius: 6px;
-      padding: 7px 9px;
-      font-size: 11px;
-      line-height: 1.4;
-      cursor: pointer;
-      text-decoration: none;
-      color: var(--text);
-      display: block;
+      border-radius: 6px; padding: 7px 9px; font-size: 11px; line-height: 1.4;
+      cursor: pointer; text-decoration: none; color: var(--text); display: block;
       transition: transform 0.1s, box-shadow 0.1s;
-      border: 1px solid rgba(0,0,0,0.06);
-      word-break: break-word;
+      border: 1px solid rgba(0,0,0,0.06); word-break: break-word;
     }
     .task-card:hover { transform: translateY(-1px); box-shadow: 0 3px 8px rgba(0,0,0,0.1); }
     .task-card .task-name { font-weight: 500; }
     .task-card .task-meta { font-size: 9px; color: rgba(0,0,0,0.4); margin-top: 3px; font-family: 'DM Mono', monospace; }
-
-    .span-card-wrap {
-      padding: 0 7px;
-      display: flex;
-      flex-direction: column;
-      background: transparent;
-    }
-
+    .span-card-wrap { padding: 0 7px; display: flex; flex-direction: column; background: transparent; }
     .status-overlay {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; gap: 12px; padding: 60px 24px; color: var(--muted);
@@ -305,7 +266,6 @@
   <div class="stat"><div class="stat-value" id="statTotal">—</div><div class="stat-label">Tasks</div></div>
   <div class="stat"><div class="stat-value" id="statChannels">—</div><div class="stat-label">Channels</div></div>
 </div>
-
 <div class="filters" id="filtersBar" style="display:none">
   <span class="filter-label">CHANNEL</span>
   <div id="channelFilters" style="display:contents"></div>
@@ -313,7 +273,6 @@
   <span class="filter-label">PHASE</span>
   <div id="phaseFilters" style="display:contents"></div>
 </div>
-
 <div class="grid-wrapper" id="gridWrapper">
   <div class="status-overlay"><div class="spinner"></div><span>Loading from Asana…</span></div>
 </div>
@@ -322,302 +281,419 @@
 <div id="panelDeliverables" style="display:none">
 <div class="del-wrap">
 
+<!-- STANDARD GTM -->
 <div class="del-section">
-  <div class="del-section-header"><span class="del-section-label">Brand Marketing</span></div>
+  <div class="del-section-header"><span class="del-section-label">Standard GTM Deliverables</span></div>
+
+  <div class="del-row">
+    <div class="del-row-header" onclick="delToggle(this)">
+      <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="del-name">Spend Messaging</span><span class="del-driver">Nkosana, Barrett, Evan</span><span class="del-team">Copy</span><span class="del-p0">P0</span>
+    </div>
+    <div class="del-components">
+      <div class="del-comp-row"><span class="del-comp-name">Product Messaging</span><span class="del-comp-team"></span><span class="del-comp-owner">Barrett</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Phase 1 Messaging</span><span class="del-comp-team"></span><span class="del-comp-owner">Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Phase 2 Messaging</span><span class="del-comp-team"></span><span class="del-comp-owner">Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Phase 3 Messaging</span><span class="del-comp-team"></span><span class="del-comp-owner">Evan</span></div>
+    </div>
+  </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Spend Graphics Suite</span><span class="del-driver">MATTE</span><span class="del-team">Brand Marketing</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Hero Design</span><span class="del-comp-owner">MATTE</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Announcement Blog Asset</span><span class="del-comp-owner">Andrew</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Announcement Email Asset(s)</span><span class="del-comp-owner">Ellen</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Press Assets</span><span class="del-comp-owner">Celeste</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Ambassadors Asset</span><span class="del-comp-owner">Hae Rang</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Messenger Asset</span><span class="del-comp-owner">Barrett</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Hero Design</span><span class="del-comp-team"></span><span class="del-comp-owner">MATTE</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Announcement Blog Asset</span><span class="del-comp-team"></span><span class="del-comp-owner">Andrew</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Announcement Email Asset(s)</span><span class="del-comp-team"></span><span class="del-comp-owner">Ellen</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Press Assets</span><span class="del-comp-team"></span><span class="del-comp-owner">Celeste</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Ambassadors Asset</span><span class="del-comp-team"></span><span class="del-comp-owner">Hae Rang</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Messenger Asset</span><span class="del-comp-team"></span><span class="del-comp-owner">Barrett</span></div>
     </div>
   </div>
+</div>
+
+<!-- BRAND MARKETING -->
+<div class="del-section">
+  <div class="del-section-header"><span class="del-section-label">Brand Marketing</span></div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Hero Film</span><span class="del-driver">Nkosana</span><span class="del-team">Brand Marketing</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">:60 Hero Film</span><span class="del-comp-owner">MATTE</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">:30 Film Cutdown</span><span class="del-comp-owner">MATTE</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">:60 Hero Film</span><span class="del-comp-team"></span><span class="del-comp-owner">MATTE</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">:30 Film Cutdown</span><span class="del-comp-team"></span><span class="del-comp-owner">MATTE</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">OOH</span><span class="del-driver">Nkosana</span><span class="del-team">Brand Marketing</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">OOH Specs (Copy + Design)</span><span class="del-comp-owner">MATTE</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">OOH Specs (Copy + Design)</span><span class="del-comp-team"></span><span class="del-comp-owner">MATTE</span></div>
     </div>
   </div>
 </div>
 
+<!-- STORIES -->
 <div class="del-section">
   <div class="del-section-header"><span class="del-section-label">Stories</span></div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">New Economics of Starting Up</span><span class="del-driver">Sid</span><span class="del-team">Stories</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Data Report on Blog</span><span class="del-comp-owner">Sid</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Artwork/cutdowns for Data Report</span><span class="del-comp-owner">Kate</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Paid Ads</span><span class="del-comp-owner">Joaquin</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Social Post(s)</span><span class="del-comp-owner">Rags</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Press Pitching</span><span class="del-comp-owner">Celeste</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Data Report on Blog</span><span class="del-comp-team">Stories</span><span class="del-comp-owner">Sid</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Artwork/cutdowns for Data Report</span><span class="del-comp-team">Brand Design</span><span class="del-comp-owner">Kate</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Paid Ads</span><span class="del-comp-team">Paid Social</span><span class="del-comp-owner">Joaquin</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Post(s)</span><span class="del-comp-team">Organic Social</span><span class="del-comp-owner">Rags</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Press Pitching</span><span class="del-comp-team">Stories</span><span class="del-comp-owner">Celeste</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Spend Edu Blog Suite (x5–10)</span><span class="del-driver">Andrew</span><span class="del-team">Stories</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Blogs</span><span class="del-comp-owner">Andrew</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Social Post(s)</span><span class="del-comp-owner">Rags</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Paid Ads</span><span class="del-comp-owner">Joaquin</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Blogs</span><span class="del-comp-team">Stories</span><span class="del-comp-owner">Andrew</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Post(s)</span><span class="del-comp-team">Organic Social</span><span class="del-comp-owner">Rags</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Paid Ads</span><span class="del-comp-team">Paid Social</span><span class="del-comp-owner">Joaquin</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Meridian: Simone</span><span class="del-driver">Sid</span><span class="del-team">Stories</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Meridian Feature</span><span class="del-comp-owner">Sid</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Meridian Artwork</span><span class="del-comp-owner">Kate</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Pitching Simone</span><span class="del-comp-owner">Celeste</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Social Post(s)</span><span class="del-comp-owner">Rags</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Meridian Feature</span><span class="del-comp-team">Stories</span><span class="del-comp-owner">Sid</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Meridian Artwork</span><span class="del-comp-team">Stories</span><span class="del-comp-owner">Kate</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Pitching Simone</span><span class="del-comp-team">Comms</span><span class="del-comp-owner">Celeste</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Post(s)</span><span class="del-comp-team">Organic Social</span><span class="del-comp-owner">Rags</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Customer Spend Case Study</span><span class="del-driver">Sid</span><span class="del-team">Stories</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Case Study</span><span class="del-comp-owner">Sid</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Case Study</span><span class="del-comp-team">Stories</span><span class="del-comp-owner">Sid</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Announcement Blog Post</span><span class="del-driver">Andrew</span><span class="del-team">Stories</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Blog</span><span class="del-comp-owner">Andrew</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Blog Asset Banner & Preview Image</span><span class="del-comp-owner">MATTE/Freelancer</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Blog</span><span class="del-comp-team">Stories</span><span class="del-comp-owner">Andrew</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Blog Asset Banner & Preview Image</span><span class="del-comp-team">Stories</span><span class="del-comp-owner">MATTE/Freelancer</span></div>
     </div>
   </div>
 </div>
 
+<!-- SOCIAL -->
 <div class="del-section">
   <div class="del-section-header"><span class="del-section-label">Social</span></div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Can I Buy This?</span><span class="del-driver">Rags</span><span class="del-team">Organic Social</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Social Copy</span><span class="del-comp-owner">Evan</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Social Graphic</span><span class="del-comp-owner">Julia</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Post</span><span class="del-comp-team">Organic Social</span><span class="del-comp-owner">Rags</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Copy</span><span class="del-comp-team">Copy</span><span class="del-comp-owner">Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Graphic</span><span class="del-comp-team">Brand Design</span><span class="del-comp-owner">Julia</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">TV Show Characters</span><span class="del-driver">Rags</span><span class="del-team">Organic Social</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Social Copy</span><span class="del-comp-owner">Evan</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Social Graphic</span><span class="del-comp-owner">Julia</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Post</span><span class="del-comp-team">Organic Social</span><span class="del-comp-owner">Rags</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Copy</span><span class="del-comp-team">Copy</span><span class="del-comp-owner">Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Graphic</span><span class="del-comp-team">Brand Design</span><span class="del-comp-owner">Julia</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Confessions of a Chief of Staff</span><span class="del-driver">Rags</span><span class="del-team">Organic Social</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Social Copy</span><span class="del-comp-owner">Evan</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Social Graphic</span><span class="del-comp-owner">Julia</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Post</span><span class="del-comp-team">Organic Social</span><span class="del-comp-owner">Rags</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Copy</span><span class="del-comp-team">Copy</span><span class="del-comp-owner">Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Graphic</span><span class="del-comp-team">Brand Design</span><span class="del-comp-owner">Julia</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Casa Bosques Chocolate</span><span class="del-driver">Rags</span><span class="del-team">Organic Social</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Social Copy</span><span class="del-comp-owner">Evan</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Social Graphic</span><span class="del-comp-owner">Julia</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Post</span><span class="del-comp-team">Organic Social</span><span class="del-comp-owner">Rags</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Copy</span><span class="del-comp-team">Copy</span><span class="del-comp-owner">Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Social Graphic</span><span class="del-comp-team">Brand Design</span><span class="del-comp-owner">Julia</span></div>
     </div>
   </div>
 </div>
 
+<!-- COMMS -->
 <div class="del-section">
   <div class="del-section-header"><span class="del-section-label">Comms</span></div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Mercury x Simone Design</span><span class="del-driver">Nic</span><span class="del-team">Comms</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Press Story</span><span class="del-comp-owner">Nic</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Press Story</span><span class="del-comp-team">Comms</span><span class="del-comp-owner">Nic</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Agentic Story</span><span class="del-driver">Nic</span><span class="del-team">Comms</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Press Story</span><span class="del-comp-owner">Nic</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Press Story</span><span class="del-comp-team">Comms</span><span class="del-comp-owner">Nic</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="del-name">Immad Announcement/Post</span><span class="del-driver">Celeste</span><span class="del-team">Comms</span><span class="del-p0">P0</span>
+      <span class="del-name">Immad Announcement/Post</span><span class="del-driver">Celeste</span><span class="del-team">Copy</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Copy</span><span class="del-comp-owner">Celeste</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Graphic</span><span class="del-comp-owner">TBC</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Copy</span><span class="del-comp-team">Copy</span><span class="del-comp-owner">Celeste</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Graphic</span><span class="del-comp-team"></span><span class="del-comp-owner">TBC</span></div>
     </div>
   </div>
 </div>
 
+<!-- EVENTS -->
 <div class="del-section">
   <div class="del-section-header"><span class="del-section-label">Events</span></div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Touch Grass Not Expenses</span><span class="del-driver">Erin</span><span class="del-team">Events</span><span class="del-p1">P1</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-owner">—</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Coffee on Mercury</span><span class="del-driver">Erin</span><span class="del-team">Events</span><span class="del-p1">P1</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-owner">—</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Galerie Sardine</span><span class="del-driver">Erin</span><span class="del-team">Events</span><span class="del-p1">P1</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-owner">—</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
     </div>
   </div>
 </div>
 
+<!-- FEM -->
 <div class="del-section">
   <div class="del-section-header"><span class="del-section-label">FEM</span></div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="del-name">/expense-management</span><span class="del-driver">Billy</span><span class="del-team">FEM</span><span class="del-p0">P0</span>
+      <span class="del-name">/expense-management</span><span class="del-driver">Billy</span><span class="del-team">Events</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Upper funnel messaging/copy</span><span class="del-comp-owner">Nkosana, Evan</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Lower funnel messaging/copy</span><span class="del-comp-owner">Barrett, Evan</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Design</span><span class="del-comp-owner">Billy, Ben, MATTE</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Upper funnel messaging/copy</span><span class="del-comp-team"></span><span class="del-comp-owner">Nkosana, Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Lower funnel messaging/copy</span><span class="del-comp-team"></span><span class="del-comp-owner">Barrett, Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Design</span><span class="del-comp-team"></span><span class="del-comp-owner">Billy, Ben, MATTE</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">/credit</span><span class="del-driver">Barrett</span><span class="del-team">PMM</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-owner">—</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Homepage Banner</span><span class="del-driver">Barrett</span><span class="del-team">PMM</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-owner">—</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
     </div>
   </div>
+
+  <div class="del-row">
+    <div class="del-row-header" onclick="delToggle(this)">
+      <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="del-name">Help Center Updates</span><span class="del-driver">Olena</span><span class="del-team">—</span><span class="del-p0">P0</span>
+    </div>
+    <div class="del-components">
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
+    </div>
+  </div>
+
+  <div class="del-row">
+    <div class="del-row-header" onclick="delToggle(this)">
+      <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="del-name">Release Notes Page</span><span class="del-driver">Anya</span><span class="del-team">PMM</span><span class="del-p0">P0</span>
+    </div>
+    <div class="del-components">
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
+    </div>
+  </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Spend Feature Video/Highlight Reel</span><span class="del-driver">Barrett</span><span class="del-team">PMM</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Product Content</span><span class="del-comp-owner">Barrett</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Storyboard</span><span class="del-comp-owner">Evan</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Video Edit</span><span class="del-comp-owner">Nikoli</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Organic Social Cutdown</span><span class="del-comp-owner">Rags</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Paid Social Cutdown</span><span class="del-comp-owner">Joaquin</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Product Content</span><span class="del-comp-team"></span><span class="del-comp-owner">Barrett</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Storyboard</span><span class="del-comp-team"></span><span class="del-comp-owner">Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Video Edit</span><span class="del-comp-team"></span><span class="del-comp-owner">Nikoli</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Organic Social Cutdown</span><span class="del-comp-team"></span><span class="del-comp-owner">Rags</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Paid Social Cutdown</span><span class="del-comp-team"></span><span class="del-comp-owner">Joaquin</span></div>
     </div>
   </div>
 </div>
 
+<!-- LIFECYCLE -->
 <div class="del-section">
   <div class="del-section-header"><span class="del-section-label">Lifecycle</span></div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Announcement Email(s)</span><span class="del-driver">Ellen</span><span class="del-team">Lifecycle</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Email Copy</span><span class="del-comp-owner">Evan</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Email Asset</span><span class="del-comp-owner">MATTE/Freelancer</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Email Copy</span><span class="del-comp-team"></span><span class="del-comp-owner">Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Email Asset</span><span class="del-comp-team"></span><span class="del-comp-owner">MATTE/Freelancer</span></div>
+      <div class="del-comp-note">↳ 600px wide, export at 1200px (2×), target 500KB, max 1MB</div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">Integrate Budgets in Welcome Series</span><span class="del-driver">Alexa</span><span class="del-team">Lifecycle</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-owner">—</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
     </div>
   </div>
+
+  <div class="del-row">
+    <div class="del-row-header" onclick="delToggle(this)">
+      <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="del-name">Update pre-activation IO campaign to feature Budgets</span><span class="del-driver">Alexa</span><span class="del-team">Lifecycle</span><span class="del-p0">P0</span>
+    </div>
+    <div class="del-components">
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
+    </div>
+  </div>
+
+  <div class="del-row">
+    <div class="del-row-header" onclick="delToggle(this)">
+      <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="del-name">Update post-activation IO campaign to feature Budgets</span><span class="del-driver">Alexa</span><span class="del-team">Lifecycle</span><span class="del-p0">P0</span>
+    </div>
+    <div class="del-components">
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
+    </div>
+  </div>
+
+  <div class="del-row">
+    <div class="del-row-header" onclick="delToggle(this)">
+      <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="del-name">Updates to top of funnel/pre-application campaigns (SIO)</span><span class="del-driver">Alina</span><span class="del-team">Lifecycle</span><span class="del-p0">P0</span>
+    </div>
+    <div class="del-components">
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
+    </div>
+  </div>
+
+  <div class="del-row">
+    <div class="del-row-header" onclick="delToggle(this)">
+      <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      <span class="del-name">Updates to working capital screener abandon emails</span><span class="del-driver">Milena</span><span class="del-team">Lifecycle</span><span class="del-p0">P0</span>
+    </div>
+    <div class="del-components">
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
+    </div>
+  </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">SIO Onboarding Emails</span><span class="del-driver">Devon K</span><span class="del-team">Product</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-owner">—</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       <span class="del-name">SIO Welcome Series</span><span class="del-driver">Alexa</span><span class="del-team">Lifecycle</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-owner">—</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">TBC</span><span class="del-comp-team"></span><span class="del-comp-owner">—</span></div>
     </div>
   </div>
+
   <div class="del-row">
     <div class="del-row-header" onclick="delToggle(this)">
       <span class="del-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-      <span class="del-name">Messenger Inclusion</span><span class="del-driver">Messenger</span><span class="del-team">Lifecycle</span><span class="del-p0">P0</span>
+      <span class="del-name">Messenger Inclusion</span><span class="del-driver">Messenger</span><span class="del-team">Copy</span><span class="del-p0">P0</span>
     </div>
     <div class="del-components">
-      <div class="del-comp-row"><span class="del-comp-name">Copy</span><span class="del-comp-owner">Evan</span></div>
-      <div class="del-comp-row"><span class="del-comp-name">Brand Design</span><span class="del-comp-owner">MATTE/Freelancer</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Copy</span><span class="del-comp-team">Copy</span><span class="del-comp-owner">Evan</span></div>
+      <div class="del-comp-row"><span class="del-comp-name">Brand Design</span><span class="del-comp-team">Brand Design</span><span class="del-comp-owner">MATTE/Freelancer</span></div>
     </div>
   </div>
 </div>
@@ -627,7 +703,6 @@
 
 <script>
 const PHASE_ORDER = ['Tease', 'Embargo', 'Phase 1', 'Phase 2', 'Phase 3', 'Sustain'];
-
 const PHASE_COLORS = {
   'Tease':   { dot: '#f0a050', bg: '#fffaf5' },
   'Embargo': { dot: '#6090e0', bg: '#f5f8ff' },
@@ -636,24 +711,20 @@ const PHASE_COLORS = {
   'Phase 3': { dot: '#e07070', bg: '#fff5f5' },
   'Sustain': { dot: '#90b050', bg: '#f8fdf0' },
 };
-
 const PHASE_SUBTITLES = {
   'Phase 1': 'Budgets, team spend features',
   'Phase 2': 'Artist card collaboration',
   'Phase 3': 'Agentic cards',
 };
-
 const CHANNEL_COLORS = {
   'Creative': '#c8dff0', 'Video': '#c8dff0', 'Brand': '#c8dff0', 'Design': '#cce8f4',
   'Communications': '#d4c8f0', 'PMM': '#e8f0c8', 'Copy': '#d8c8f0',
-  'Social': '#c8f0d8',
-  'Stories': '#f0c8c8',
+  'Social': '#c8f0d8', 'Stories': '#f0c8c8',
   'Events': '#f0dcc8', 'Community': '#f0dcc8',
   'Lifecycle': '#c8eef0',
   'FEM': '#e0d8f8', 'In product/UX': '#e0d8f8',
   'Performance Marketing': '#f0c8e8',
 };
-
 const CHANNEL_ROWS = [
   { label: 'Creative',    matches: ['Creative','Video','Brand','Design'] },
   { label: 'Comms',       matches: ['Communications','PMM','Copy'] },
@@ -665,9 +736,7 @@ const CHANNEL_ROWS = [
   { label: 'Paid Social', matches: ['Performance Marketing'] },
 ];
 
-let allTasks = [];
-let allPhases = [];
-let activePhases = new Set();
+let allTasks = [], allPhases = [], activePhases = new Set();
 let activeRowFilters = new Set(CHANNEL_ROWS.map(r => r.label));
 
 async function loadTasks() {
@@ -690,33 +759,24 @@ async function loadTasks() {
 }
 
 function processData() {
-  const phaseSet = new Set();
-  const channelSet = new Set();
-  allTasks.forEach(t => {
-    t.phases.forEach(p => phaseSet.add(p));
-    if (t.channel) channelSet.add(t.channel);
-  });
+  const phaseSet = new Set(), channelSet = new Set();
+  allTasks.forEach(t => { t.phases.forEach(p => phaseSet.add(p)); if (t.channel) channelSet.add(t.channel); });
   allPhases = PHASE_ORDER.filter(p => phaseSet.has(p));
   activePhases = new Set(allPhases);
-
   document.getElementById('statsBar').style.display = 'flex';
   document.getElementById('statTotal').textContent = allTasks.length;
   document.getElementById('statChannels').textContent = channelSet.size;
-
-  renderFilters();
-  renderGrid();
+  renderFilters(); renderGrid();
 }
 
 function renderFilters() {
   document.getElementById('filtersBar').style.display = 'flex';
-
   const cf = document.getElementById('channelFilters');
   cf.innerHTML = '';
   CHANNEL_ROWS.forEach(row => {
     if (!allTasks.some(t => row.matches.includes(t.channel))) return;
     const chip = document.createElement('button');
-    chip.className = 'filter-chip active';
-    chip.textContent = row.label;
+    chip.className = 'filter-chip active'; chip.textContent = row.label;
     chip.onclick = () => {
       if (activeRowFilters.has(row.label)) { activeRowFilters.delete(row.label); chip.classList.remove('active'); }
       else { activeRowFilters.add(row.label); chip.classList.add('active'); }
@@ -724,13 +784,11 @@ function renderFilters() {
     };
     cf.appendChild(chip);
   });
-
   const pf = document.getElementById('phaseFilters');
   pf.innerHTML = '';
   allPhases.forEach(phase => {
     const chip = document.createElement('button');
-    chip.className = 'filter-chip active';
-    chip.textContent = phase;
+    chip.className = 'filter-chip active'; chip.textContent = phase;
     chip.onclick = () => {
       if (activePhases.has(phase)) { activePhases.delete(phase); chip.classList.remove('active'); }
       else { activePhases.add(phase); chip.classList.add('active'); }
@@ -746,27 +804,21 @@ function renderGrid() {
     if (!activeRowFilters.has(row.label)) return false;
     return allTasks.some(t => row.matches.includes(t.channel) && t.phases.some(p => visiblePhases.includes(p)));
   });
-
   if (!visiblePhases.length || !visibleRows.length) {
     document.getElementById('gridWrapper').innerHTML = '<div class="status-overlay"><span>No matching tasks</span></div>';
     return;
   }
-
   const n = visiblePhases.length;
   const wrapper = document.getElementById('gridWrapper');
   wrapper.innerHTML = '';
-
   const timeline = document.createElement('div');
   timeline.className = 'timeline';
-
   const headerRow = document.createElement('div');
   headerRow.className = 'header-row';
   headerRow.style.setProperty('--phase-count', n);
-
   const corner = document.createElement('div');
   corner.className = 'corner-cell';
   headerRow.appendChild(corner);
-
   visiblePhases.forEach(phase => {
     const h = document.createElement('div');
     h.className = 'phase-header';
@@ -787,123 +839,70 @@ function renderGrid() {
     headerRow.appendChild(h);
   });
   timeline.appendChild(headerRow);
-
   visibleRows.forEach(row => {
     const rowEl = document.createElement('div');
     rowEl.className = 'channel-row';
-
     const labelEl = document.createElement('div');
     labelEl.className = 'channel-label';
     labelEl.textContent = row.label;
     rowEl.appendChild(labelEl);
-
     const cellsEl = document.createElement('div');
     cellsEl.className = 'row-cells';
-
-    const rowTasks = allTasks.filter(t =>
-      row.matches.includes(t.channel) &&
-      t.phases.some(p => visiblePhases.includes(p))
-    );
-
-    const spanTasks = [];
-    const singleTasks = [];
-
+    const rowTasks = allTasks.filter(t => row.matches.includes(t.channel) && t.phases.some(p => visiblePhases.includes(p)));
+    const spanTasks = [], singleTasks = [];
     rowTasks.forEach(task => {
-      const idxs = task.phases
-        .map(p => visiblePhases.indexOf(p))
-        .filter(i => i !== -1)
-        .sort((a, b) => a - b);
+      const idxs = task.phases.map(p => visiblePhases.indexOf(p)).filter(i => i !== -1).sort((a, b) => a - b);
       if (!idxs.length) return;
-
-      const contiguous = idxs.length > 1 &&
-        idxs.every((v, i) => i === 0 || v === idxs[i-1] + 1);
-
-      if (contiguous) {
-        spanTasks.push({ task, start: idxs[0], end: idxs[idxs.length - 1] });
-      } else {
-        idxs.forEach(idx => singleTasks.push({ task, colIdx: idx }));
-      }
+      const contiguous = idxs.length > 1 && idxs.every((v, i) => i === 0 || v === idxs[i-1] + 1);
+      if (contiguous) { spanTasks.push({ task, start: idxs[0], end: idxs[idxs.length - 1] }); }
+      else { idxs.forEach(idx => singleTasks.push({ task, colIdx: idx })); }
     });
-
     const spanRow = document.createElement('div');
     spanRow.className = 'span-row';
     spanRow.style.setProperty('--phase-count', n);
     spanRow.style.position = 'relative';
-
     visiblePhases.forEach((phase, colIdx) => {
       const bg = document.createElement('div');
-      bg.style.cssText = `
-        position: absolute;
-        top: 0; bottom: 0;
-        left: calc(${colIdx} * (100% / ${n}));
-        width: calc(100% / ${n});
-        background: ${PHASE_COLORS[phase]?.bg || '#fff'};
-        z-index: 0;
-        ${colIdx > 0 ? 'border-left: 1px solid var(--border);' : ''}
-      `;
+      bg.style.cssText = `position:absolute;top:0;bottom:0;left:calc(${colIdx}*(100%/${n}));width:calc(100%/${n});background:${PHASE_COLORS[phase]?.bg||'#fff'};z-index:0;${colIdx>0?'border-left:1px solid var(--border);':''}`;
       spanRow.appendChild(bg);
     });
-
     spanTasks.forEach(({ task, start, end }) => {
       const wrap = document.createElement('div');
       wrap.className = 'span-card-wrap';
       wrap.style.gridColumn = `${start + 1} / ${end + 2}`;
-      wrap.style.position = 'relative';
-      wrap.style.zIndex = '1';
-
-      const card = makeCard(task);
-      card.style.flex = '1';
+      wrap.style.position = 'relative'; wrap.style.zIndex = '1';
+      const card = makeCard(task); card.style.flex = '1';
       const spanMeta = document.createElement('div');
       spanMeta.className = 'task-meta';
       spanMeta.textContent = visiblePhases.slice(start, end + 1).join(' → ');
-      card.appendChild(spanMeta);
-      wrap.appendChild(card);
-      spanRow.appendChild(wrap);
+      card.appendChild(spanMeta); wrap.appendChild(card); spanRow.appendChild(wrap);
     });
-
     if (spanTasks.length) cellsEl.appendChild(spanRow);
-
     const stackRow = document.createElement('div');
     stackRow.className = 'stack-row';
     stackRow.style.setProperty('--phase-count', n);
-
     visiblePhases.forEach((phase, colIdx) => {
       const cell = document.createElement('div');
       cell.className = 'phase-cell' + (colIdx === n - 1 ? ' last-col' : '');
       if (PHASE_COLORS[phase]) cell.style.background = PHASE_COLORS[phase].bg;
-
-      singleTasks
-        .filter(s => s.colIdx === colIdx)
-        .forEach(({ task }) => cell.appendChild(makeCard(task)));
-
+      singleTasks.filter(s => s.colIdx === colIdx).forEach(({ task }) => cell.appendChild(makeCard(task)));
       stackRow.appendChild(cell);
     });
-
     cellsEl.appendChild(stackRow);
     rowEl.appendChild(cellsEl);
     timeline.appendChild(rowEl);
   });
-
   wrapper.appendChild(timeline);
 }
 
 function makeCard(task) {
   const card = document.createElement('a');
-  card.className = 'task-card';
-  card.href = task.url;
-  card.target = '_blank';
-  card.rel = 'noopener noreferrer';
+  card.className = 'task-card'; card.href = task.url; card.target = '_blank'; card.rel = 'noopener noreferrer';
   card.style.background = CHANNEL_COLORS[task.channel] || '#e8e8e2';
-
-  const name = document.createElement('div');
-  name.className = 'task-name';
-  name.textContent = task.name;
+  const name = document.createElement('div'); name.className = 'task-name'; name.textContent = task.name;
   card.appendChild(name);
-
   if (task.due_on) {
-    const meta = document.createElement('div');
-    meta.className = 'task-meta';
-    meta.textContent = formatDate(task.due_on);
+    const meta = document.createElement('div'); meta.className = 'task-meta'; meta.textContent = formatDate(task.due_on);
     card.appendChild(meta);
   }
   return card;
@@ -924,9 +923,9 @@ function switchTab(tab) {
 function delToggle(header) {
   const components = header.nextElementSibling;
   const chevron = header.querySelector('.del-chevron svg');
-  const isOpen = components.classList.contains('open');
-  components.classList.toggle('open', !isOpen);
-  chevron.style.transform = isOpen ? '' : 'rotate(90deg)';
+  const isClosed = components.classList.contains('closed');
+  components.classList.toggle('closed', !isClosed);
+  chevron.style.transform = isClosed ? 'rotate(90deg)' : '';
 }
 
 loadTasks();
