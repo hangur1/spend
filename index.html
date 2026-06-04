@@ -103,6 +103,31 @@
     .dlv-progress-fill { height: 100%; border-radius: 2px; background: #50c878; transition: width 0.3s; }
     .dlv-progress-label { font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; white-space: nowrap; }
 
+
+    /* ── CALENDAR TAB ── */
+    .cal-wrap { padding: 24px; overflow-x: auto; }
+    .cal-month { margin-bottom: 32px; min-width: 700px; }
+    .cal-month-header { font-size: 13px; font-weight: 600; letter-spacing: -0.01em; margin-bottom: 12px; color: var(--text); }
+    .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+    .cal-day-header { background: var(--header-bg); color: rgba(255,255,255,0.5); font-size: 9px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; padding: 6px 0; }
+    .cal-day { background: var(--surface); min-height: 80px; padding: 6px; vertical-align: top; }
+    .cal-day.other-month { background: var(--bg); }
+    .cal-day.today { background: #fffdf0; }
+    .cal-date { font-size: 11px; font-weight: 500; color: var(--muted); margin-bottom: 4px; }
+    .cal-date.today-num { color: var(--text); font-weight: 700; }
+    .cal-event {
+      font-size: 10px; padding: 2px 5px; border-radius: 3px; margin-bottom: 2px;
+      cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      text-decoration: none; display: block; color: var(--text);
+      border: 1px solid rgba(0,0,0,0.06);
+    }
+    .cal-event:hover { opacity: 0.8; }
+    .cal-phase-band {
+      font-size: 9px; padding: 1px 4px; border-radius: 2px; margin-bottom: 3px;
+      font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase;
+      opacity: 0.7;
+    }
+
     /* ── DELIVERABLES LIVE TAB ── */
     .dlv-wrap { padding: 24px; max-width: 1000px; }
     .dlv-section { margin-bottom: 28px; }
@@ -380,8 +405,9 @@
 
 <div class="tab-nav">
   <button class="tab-btn active" id="tabOverview" onclick="switchTab('overview')">Overview</button>
-  <button class="tab-btn" id="tabTimeline" onclick="switchTab('timeline')">Timeline</button>
+  <button class="tab-btn" id="tabTimeline" onclick="switchTab('timeline')">Phased Planning</button>
   <button class="tab-btn" id="tabDeliverables" onclick="switchTab('deliverables')">Deliverables</button>
+  <button class="tab-btn" id="tabCalendar" onclick="switchTab('calendar')">Calendar</button>
 </div>
 
 <div id="panelOverview">
@@ -460,6 +486,11 @@
 <div id="panelDeliverables" style="display:none">
 <div class="dlv-wrap" id="dlvWrap"><div class="dlv-loading">Loading deliverables from Asana…</div></div>
 </div><!-- /panelDeliverables -->
+
+
+<div id="panelCalendar" style="display:none">
+  <div class="cal-wrap" id="calWrap"><div class="dlv-loading">Loading calendar…</div></div>
+</div><!-- /panelCalendar -->
 
 <script>
 const PHASE_ORDER = ['Tease', 'Embargo', 'Phase 1', 'Phase 2', 'Phase 3', 'Sustain'];
@@ -637,6 +668,108 @@ function renderDeliverables(tasks) {
   wrap.innerHTML = html;
 }
 
+
+const CHANNEL_COLORS_CAL = {
+  'Brand': '#c8dff0', 'Creative': '#c8dff0', 'Design': '#cce8f4', 'Video': '#c8dff0',
+  'Communications': '#d4c8f0', 'PMM': '#e8f0c8', 'Copy': '#d8c8f0',
+  'Social': '#c8f0d8', 'Stories': '#f0c8c8',
+  'Events': '#f0dcc8', 'Community': '#f0dcc8',
+  'Lifecycle': '#c8eef0',
+  'FEM': '#e0d8f8', 'In product/UX': '#e0d8f8',
+  'Performance Marketing': '#f0c8e8', 'Paid Social': '#f0c8e8',
+};
+
+const PHASE_BANDS = [
+  { name: 'Tease', start: '2026-07-06', end: '2026-07-15', color: '#f0a050' },
+  { name: 'Embargo / Launch', start: '2026-07-16', end: '2026-07-16', color: '#6090e0' },
+  { name: 'Phase 1', start: '2026-07-27', end: '2026-08-07', color: '#50c878' },
+  { name: 'Phase 2', start: '2026-08-03', end: '2026-08-14', color: '#9b70e0' },
+  { name: 'Phase 3', start: '2026-08-10', end: '2026-08-21', color: '#e07070' },
+];
+
+function renderCalendar(tasks) {
+  const wrap = document.getElementById('calWrap');
+  if (!tasks || !tasks.length) { wrap.innerHTML = '<div class="dlv-loading">No tasks with due dates.</div>'; return; }
+
+  // Build due-date map
+  const byDate = {};
+  tasks.forEach(task => {
+    if (!task.due_on) return;
+    if (!byDate[task.due_on]) byDate[task.due_on] = [];
+    byDate[task.due_on].push(task);
+  });
+
+  // Build phase-date map for bands
+  const phaseDates = {};
+  PHASE_BANDS.forEach(p => {
+    const s = new Date(p.start + 'T00:00:00');
+    const e = new Date(p.end + 'T00:00:00');
+    for (let d = new Date(s); d <= e; d.setDate(d.getDate() + 1)) {
+      const key = d.toISOString().split('T')[0];
+      if (!phaseDates[key]) phaseDates[key] = [];
+      phaseDates[key].push(p);
+    }
+  });
+
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const todayStr = today.toISOString().split('T')[0];
+
+  // Render June, July, August 2026
+  const months = [
+    { year: 2026, month: 5, name: 'June 2026' },
+    { year: 2026, month: 6, name: 'July 2026' },
+    { year: 2026, month: 7, name: 'August 2026' },
+  ];
+
+  let html = '';
+  months.forEach(({ year, month, name }) => {
+    const firstDay = new Date(year, month, 1);
+    const lastDay = new Date(year, month + 1, 0);
+    const startDow = firstDay.getDay(); // 0=Sun
+
+    html += `<div class="cal-month"><div class="cal-month-header">${name}</div><div class="cal-grid">`;
+    ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].forEach(d => {
+      html += `<div class="cal-day-header">${d}</div>`;
+    });
+
+    // Leading empty cells
+    for (let i = 0; i < startDow; i++) html += `<div class="cal-day other-month"></div>`;
+
+    for (let day = 1; day <= lastDay.getDate(); day++) {
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+      const isToday = dateStr === todayStr;
+      const phases = phaseDates[dateStr] || [];
+      const dayTasks = byDate[dateStr] || [];
+
+      html += `<div class="cal-day${isToday ? ' today' : ''}">`;
+      html += `<div class="cal-date${isToday ? ' today-num' : ''}">${day}</div>`;
+
+      // Phase bands
+      phases.forEach(p => {
+        html += `<div class="cal-phase-band" style="background:${p.color}22;color:${p.color};border:1px solid ${p.color}44">${p.name}</div>`;
+      });
+
+      // Tasks
+      dayTasks.forEach(task => {
+        const bg = CHANNEL_COLORS_CAL[task.channel] || '#e8e8e2';
+        const displayName = task.name.includes(':') ? task.name.split(':').slice(1).join(':').trim() : task.name;
+        html += `<a href="${task.url}" target="_blank" class="cal-event" style="background:${bg}" title="${task.name}">${displayName}</a>`;
+      });
+
+      html += `</div>`;
+    }
+
+    // Trailing empty cells
+    const trailing = (7 - ((startDow + lastDay.getDate()) % 7)) % 7;
+    for (let i = 0; i < trailing; i++) html += `<div class="cal-day other-month"></div>`;
+
+    html += `</div></div>`;
+  });
+
+  wrap.innerHTML = html;
+}
+
 async function loadTasks() {
   const btn = document.getElementById('refreshBtn');
   btn.classList.add('spinning');
@@ -648,6 +781,7 @@ async function loadTasks() {
     allTasks = data.tasks;
     processData();
     renderDeliverables(allTasks);
+    renderCalendar(allTasks);
     document.getElementById('lastUpdated').textContent = 'Updated ' + new Date().toLocaleTimeString();
   } catch (e) {
     document.getElementById('gridWrapper').innerHTML =
@@ -877,9 +1011,11 @@ function formatDate(d) {
 
 function switchTab(tab) {
   document.getElementById('panelOverview').style.display = tab === 'overview' ? '' : 'none';
+  document.getElementById('panelCalendar').style.display = tab === 'calendar' ? '' : 'none';
   document.getElementById('panelTimeline').style.display = tab === 'timeline' ? '' : 'none';
   document.getElementById('panelDeliverables').style.display = tab === 'deliverables' ? '' : 'none';
   document.getElementById('tabOverview').classList.toggle('active', tab === 'overview');
+  document.getElementById('tabCalendar').classList.toggle('active', tab === 'calendar');
   document.getElementById('tabTimeline').classList.toggle('active', tab === 'timeline');
   document.getElementById('tabDeliverables').classList.toggle('active', tab === 'deliverables');
 }
