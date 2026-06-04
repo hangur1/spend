@@ -830,11 +830,11 @@ const PHASE_COLORS = {
   'Sustain': { dot: '#90b050', bg: '#f8fdf0' },
 };
 const PHASE_SUBTITLES = {
-  'Tease': 'Jul 6 – Jul 15',
-  'Embargo': 'Jul 16 · Launch',
-  'Phase 1': 'Jul 27 – Aug 7 · Budgets, team spend features',
-  'Phase 2': 'Aug 3 – Aug 14 · Artist card collaboration',
-  'Phase 3': 'Aug 10 – Aug 21 · Agentic cards',
+  'Tease': { desc: null, dates: 'Jul 6 – Jul 15' },
+  'Embargo': { desc: 'Launch', dates: 'Jul 16' },
+  'Phase 1': { desc: 'Budgets, team spend features', dates: 'Jul 27 – Aug 7' },
+  'Phase 2': { desc: 'Artist card collaboration', dates: 'Aug 3 – Aug 14' },
+  'Phase 3': { desc: 'Agentic cards', dates: 'Aug 10 – Aug 21' },
 };
 const CHANNEL_COLORS = {
   'Creative': '#c8dff0', 'Video': '#c8dff0', 'Brand': '#c8dff0', 'Design': '#cce8f4',
@@ -970,10 +970,19 @@ function renderGrid() {
     top.appendChild(document.createTextNode(phase));
     h.appendChild(top);
     if (PHASE_SUBTITLES[phase]) {
-      const sub = document.createElement('div');
-      sub.className = 'phase-subtitle';
-      sub.textContent = PHASE_SUBTITLES[phase];
-      h.appendChild(sub);
+      const { desc, dates } = PHASE_SUBTITLES[phase];
+      if (desc) {
+        const sub = document.createElement('div');
+        sub.className = 'phase-subtitle';
+        sub.textContent = desc;
+        h.appendChild(sub);
+      }
+      if (dates) {
+        const datEl = document.createElement('div');
+        datEl.className = 'phase-subtitle';
+        datEl.textContent = dates;
+        h.appendChild(datEl);
+      }
     }
     headerRow.appendChild(h);
   });
