@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Spend Campaign Timeline</title>
+  <title>Mercury Spend GTM</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
   <style>
@@ -41,6 +41,60 @@
     }
     .tab-btn:hover { color: var(--text); }
     .tab-btn.active { color: var(--text); border-bottom-color: var(--text); }
+
+    /* ── HOMEPAGE TAB ── */
+    .home-wrap { padding: 24px; max-width: 960px; }
+    .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .home-card {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 10px; padding: 20px;
+    }
+    .home-card-title {
+      font-size: 10px; font-weight: 600; letter-spacing: 0.07em;
+      text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
+    }
+    .home-card-full { grid-column: 1 / -1; }
+    .phase-bar { display: flex; gap: 6px; align-items: center; margin-bottom: 8px; }
+    .phase-pip { flex: 1; height: 6px; border-radius: 3px; background: var(--border); }
+    .phase-pip.done { background: var(--header-bg); }
+    .phase-pip.active { background: #50c878; }
+    .phase-labels { display: flex; gap: 6px; margin-bottom: 4px; }
+    .phase-tag { flex: 1; text-align: center; font-size: 10px; color: var(--muted); font-family: 'DM Mono', monospace; }
+    .phase-tag.active { color: var(--text); font-weight: 500; }
+    .launch-count { display: flex; align-items: baseline; gap: 6px; margin-bottom: 4px; }
+    .launch-days { font-size: 40px; font-weight: 600; letter-spacing: -0.03em; line-height: 1; }
+    .launch-label { font-size: 13px; color: var(--muted); }
+    .launch-date { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; margin-top: 6px; }
+    .gate-row { display: flex; align-items: center; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .gate-row:last-child { border-bottom: none; }
+    .gate-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+    .gate-dot.done { background: #50c878; }
+    .gate-dot.active { background: #f0a050; }
+    .gate-dot.upcoming { background: var(--border); border: 1px solid #ccc; }
+    .gate-name { flex: 1; font-size: 12px; }
+    .gate-date { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; white-space: nowrap; }
+    .gate-status { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 20px; white-space: nowrap; }
+    .gate-status.done { background: #eafaf1; color: #1a7a40; }
+    .gate-status.active { background: #fff8ee; color: #a06010; }
+    .gate-status.upcoming { background: var(--bg); color: var(--muted); }
+    .link-row { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--border); text-decoration: none; color: var(--text); transition: opacity 0.12s; }
+    .link-row:last-child { border-bottom: none; }
+    .link-row:hover { opacity: 0.65; }
+    .link-icon { width: 28px; height: 28px; border-radius: 6px; background: var(--bg); display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; border: 1px solid var(--border); font-family: 'DM Mono', monospace; color: var(--muted); font-weight: 600; }
+    .link-label { font-size: 12px; font-weight: 500; flex: 1; }
+    .link-sub { font-size: 11px; color: var(--muted); }
+    .link-arrow { font-size: 14px; color: var(--muted); }
+    .daci-row { display: grid; grid-template-columns: 80px 1fr; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--border); align-items: start; }
+    .daci-row:last-child { border-bottom: none; }
+    .daci-role { font-size: 10px; font-weight: 600; letter-spacing: 0.05em; text-transform: uppercase; color: var(--muted); padding-top: 2px; }
+    .daci-names { font-size: 12px; line-height: 1.7; }
+    .hot-row { display: flex; gap: 10px; align-items: flex-start; padding: 8px 0; border-bottom: 1px solid var(--border); }
+    .hot-row:last-child { border-bottom: none; }
+    .hot-tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; margin-top: 1px; }
+    .hot-tag.blocker { background: #fceaea; color: #a02020; border: 1px solid #f5c0c0; }
+    .hot-tag.watch { background: #fff8ee; color: #a06010; border: 1px solid #fce0a0; }
+    .hot-tag.fyi { background: var(--bg); color: var(--muted); border: 1px solid var(--border); }
+    .hot-text { font-size: 12px; line-height: 1.5; color: var(--text); }
 
     /* ── DELIVERABLES TAB ── */
     .del-wrap { padding: 24px; max-width: 960px; }
@@ -240,8 +294,8 @@
 <div class="topbar">
   <div class="topbar-left">
     <div>
-      <div class="topbar-title">Spend Campaign Timeline</div>
-      <div class="topbar-subtitle">T1 – Spend Management + Standalone IO Launch</div>
+      <div class="topbar-title">Mercury Spend GTM</div>
+      <div class="topbar-subtitle">T1 – Spend Management + Standalone IO Launch · Jul 16</div>
     </div>
     <span class="badge">LIVE</span>
   </div>
@@ -257,11 +311,148 @@
 </div>
 
 <div class="tab-nav">
-  <button class="tab-btn active" id="tabTimeline" onclick="switchTab('timeline')">Timeline</button>
+  <button class="tab-btn active" id="tabOverview" onclick="switchTab('overview')">Overview</button>
+  <button class="tab-btn" id="tabTimeline" onclick="switchTab('timeline')">Timeline</button>
   <button class="tab-btn" id="tabDeliverables" onclick="switchTab('deliverables')">Deliverables</button>
 </div>
 
-<div id="panelTimeline">
+<div id="panelOverview">
+<div class="home-wrap">
+
+  <div class="home-grid">
+
+    <!-- Launch countdown -->
+    <div class="home-card">
+      <div class="home-card-title">Launch</div>
+      <div class="launch-count">
+        <span class="launch-days" id="daysToLaunch">—</span>
+        <span class="launch-label">days to launch</span>
+      </div>
+      <div class="launch-date">July 16, 2026 · T1 Launch</div>
+      <div style="margin-top: 20px;">
+        <div class="phase-labels">
+          <span class="phase-tag done">Tease</span>
+          <span class="phase-tag active">Embargo</span>
+          <span class="phase-tag upcoming">Launch</span>
+          <span class="phase-tag upcoming">Sustain</span>
+        </div>
+        <div class="phase-bar">
+          <div class="phase-pip done"></div>
+          <div class="phase-pip active"></div>
+          <div class="phase-pip upcoming"></div>
+          <div class="phase-pip upcoming"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Approval gates -->
+    <div class="home-card">
+      <div class="home-card-title">Approval Gates</div>
+      <div class="gate-row">
+        <div class="gate-dot done"></div>
+        <span class="gate-name">Gate 1 — Rachel & channel leads</span>
+        <span class="gate-date">Jun 5</span>
+        <span class="gate-status done">Done</span>
+      </div>
+      <div class="gate-row">
+        <div class="gate-dot done"></div>
+        <span class="gate-name">Gate 2 — Tactical deliverables & resourcing</span>
+        <span class="gate-date">Jun 10</span>
+        <span class="gate-status done">Done</span>
+      </div>
+      <div class="gate-row">
+        <div class="gate-dot done"></div>
+        <span class="gate-name">Pencils down — all ideas locked</span>
+        <span class="gate-date">Jun 12</span>
+        <span class="gate-status done">Done</span>
+      </div>
+      <div class="gate-row">
+        <div class="gate-dot active"></div>
+        <span class="gate-name">All assets approved by Rachel</span>
+        <span class="gate-date">Jul 1</span>
+        <span class="gate-status active">In progress</span>
+      </div>
+      <div class="gate-row">
+        <div class="gate-dot upcoming"></div>
+        <span class="gate-name">Compliance + Column review</span>
+        <span class="gate-date">Jul 2–10</span>
+        <span class="gate-status upcoming">Upcoming</span>
+      </div>
+      <div class="gate-row">
+        <div class="gate-dot upcoming"></div>
+        <span class="gate-name">Launch</span>
+        <span class="gate-date">Jul 16</span>
+        <span class="gate-status upcoming">Upcoming</span>
+      </div>
+    </div>
+
+    <!-- Hot items -->
+    <div class="home-card home-card-full">
+      <div class="home-card-title">This Week</div>
+      <div class="hot-row">
+        <span class="hot-tag watch">Watch</span>
+        <span class="hot-text">Card production timelines could compromise Jul 16 launch — confirm with ops</span>
+      </div>
+      <div class="hot-row">
+        <span class="hot-tag watch">Watch</span>
+        <span class="hot-text">Nikoli availability for Spend Feature Video edit — TBC</span>
+      </div>
+      <div class="hot-row">
+        <span class="hot-tag fyi">FYI</span>
+        <span class="hot-text">All creative requests should be briefed + submitted to Matte/freelancers by Jun 15 — final assets needed Jul 1</span>
+      </div>
+      <div class="hot-row">
+        <span class="hot-tag fyi">FYI</span>
+        <span class="hot-text">Revenue enablement trainings scheduled week of Jul 6 — Barrett to lead</span>
+      </div>
+    </div>
+
+    <!-- Quick links -->
+    <div class="home-card">
+      <div class="home-card-title">Quick Links</div>
+      <a class="link-row" href="https://docs.google.com/document/d/1DXY48NChmPH35287EmG2QpDpQno1eX5gdNiqnsECfsw/edit?tab=t.dkpyy7dunnoq" target="_blank">
+        <div class="link-icon">GD</div>
+        <div style="flex:1"><div class="link-label">Campaign Strategy Doc</div><div class="link-sub">Full brief, creative direction, product deep dive</div></div>
+        <span class="link-arrow">↗</span>
+      </a>
+      <a class="link-row" href="https://app.asana.com/1/1198745115141077/project/1211763087952574/task/1215397981889368" target="_blank">
+        <div class="link-icon">As</div>
+        <div style="flex:1"><div class="link-label">Asana Project Board</div><div class="link-sub">Live task tracking and assignments</div></div>
+        <span class="link-arrow">↗</span>
+      </a>
+      <a class="link-row" href="https://mercury.enterprise.slack.com/archives/C0B01395S3F" target="_blank">
+        <div class="link-icon">#</div>
+        <div style="flex:1"><div class="link-label">#project-spend-gtm</div><div class="link-sub">Slack campaign channel</div></div>
+        <span class="link-arrow">↗</span>
+      </a>
+    </div>
+
+    <!-- DACI -->
+    <div class="home-card">
+      <div class="home-card-title">DACI</div>
+      <div class="daci-row">
+        <span class="daci-role">Driver</span>
+        <span class="daci-names">Nkosana Moyo (Upper funnel + creative)<br>Barrett Johnson (Lower funnel + PMM)</span>
+      </div>
+      <div class="daci-row">
+        <span class="daci-role">Approver</span>
+        <span class="daci-names">Rachel Oatway<br>Jason Zhang</span>
+      </div>
+      <div class="daci-row">
+        <span class="daci-role">Contrib</span>
+        <span class="daci-names">Hannah Gur-Arie · Evan P. Schneider · Gwen Barker · Devon Watts · Dani Moalem</span>
+      </div>
+      <div class="daci-row">
+        <span class="daci-role">Informed</span>
+        <span class="daci-names">All</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+</div><!-- /panelOverview -->
+
+<div id="panelTimeline" style="display:none">
 <div class="stats-bar" id="statsBar" style="display:none">
   <div class="stat"><div class="stat-value" id="statTotal">—</div><div class="stat-label">Tasks</div></div>
   <div class="stat"><div class="stat-value" id="statChannels">—</div><div class="stat-label">Channels</div></div>
@@ -914,11 +1105,22 @@ function formatDate(d) {
 }
 
 function switchTab(tab) {
+  document.getElementById('panelOverview').style.display = tab === 'overview' ? '' : 'none';
   document.getElementById('panelTimeline').style.display = tab === 'timeline' ? '' : 'none';
   document.getElementById('panelDeliverables').style.display = tab === 'deliverables' ? '' : 'none';
+  document.getElementById('tabOverview').classList.toggle('active', tab === 'overview');
   document.getElementById('tabTimeline').classList.toggle('active', tab === 'timeline');
   document.getElementById('tabDeliverables').classList.toggle('active', tab === 'deliverables');
 }
+
+function initDaysToLaunch() {
+  const launch = new Date('2026-07-16');
+  const today = new Date();
+  today.setHours(0,0,0,0);
+  const diff = Math.ceil((launch - today) / (1000 * 60 * 60 * 24));
+  document.getElementById('daysToLaunch').textContent = diff > 0 ? diff : 0;
+}
+initDaysToLaunch();
 
 function delToggle(header) {
   const components = header.nextElementSibling;
