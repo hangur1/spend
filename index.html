@@ -519,7 +519,7 @@ const CHANNEL_COLORS = {
   'Performance Marketing': '#f0c8e8',
 };
 const CHANNEL_ROWS = [
-  { label: 'Creative',    matches: ['Creative','Video','Brand','Design'] },
+  { label: 'Hero Deliverables', matches: ['Creative','Video','Brand','Design'] },
   { label: 'Comms',       matches: ['Communications','PMM','Copy'] },
   { label: 'Social',      matches: ['Social'] },
   { label: 'Stories',     matches: ['Stories'] },
@@ -856,7 +856,7 @@ function taskFunnel(task) {
   const f = (task.funnel || '').toLowerCase();
   if (f.includes('upper')) return 'upper';
   if (f.includes('lower')) return 'lower';
-  if (f.includes('creative')) return 'upper';
+  if (f.includes('creative') || f.includes('hero')) return 'upper';
   // fallback: channel heuristics
   const upper = ['Creative','Video','Brand','Design','Social','Stories','Events','Community','Communications','Copy'];
   if (upper.includes(task.channel)) return 'upper';
