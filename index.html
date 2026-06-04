@@ -278,6 +278,29 @@
     .task-card .task-name { font-weight: 500; }
     .task-card .task-meta { font-size: 9px; color: rgba(0,0,0,0.4); margin-top: 3px; font-family: 'DM Mono', monospace; }
     .span-card-wrap { padding: 0 7px; display: flex; flex-direction: column; background: transparent; }
+    .funnel-section { margin-bottom: 0; }
+    .funnel-header {
+      display: grid;
+      grid-template-columns: 80px repeat(var(--phase-count, 5), 1fr);
+      background: var(--bg);
+      border-top: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 10;
+    }
+    .funnel-label-cell {
+      display: flex; align-items: center; justify-content: center;
+      writing-mode: vertical-rl; text-orientation: mixed; transform: rotate(180deg);
+      font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;
+      color: var(--text); border-right: 1px solid var(--border);
+      padding: 12px 4px; background: var(--bg);
+    }
+    .funnel-label-cell.upper { background: #f5f5f0; }
+    .funnel-label-cell.lower { background: #efefea; }
+    .funnel-phase-spacer {
+      border-right: 1px solid var(--border); background: var(--bg);
+      min-height: 8px;
+    }
+    .funnel-phase-spacer:last-child { border-right: none; }
+
     .status-overlay {
       display: flex; flex-direction: column; align-items: center;
       justify-content: center; gap: 12px; padding: 60px 24px; color: var(--muted);
@@ -904,6 +927,21 @@ function renderFilters() {
   });
 }
 
+const FUNNEL_SECTIONS = [
+  { label: 'Upper Funnel', key: 'upper', sectionMatches: ['Upper Funnel', 'UPPER FUNNEL', 'upper funnel', 'Upper funnel'] },
+  { label: 'Lower Funnel', key: 'lower', sectionMatches: ['Lower Funnel', 'LOWER FUNNEL', 'lower funnel', 'Lower funnel'] },
+];
+
+function taskFunnel(task) {
+  const s = (task.section || '').toLowerCase();
+  if (s.includes('upper')) return 'upper';
+  if (s.includes('lower')) return 'lower';
+  // fallback: use channel heuristics
+  const upper = ['Creative','Video','Brand','Design','Social','Stories','Events','Community','Communications','Copy'];
+  if (upper.includes(task.channel)) return 'upper';
+  return 'lower';
+}
+
 function renderGrid() {
   const visiblePhases = PHASE_ORDER.filter(p => activePhases.has(p) && allPhases.includes(p));
   const visibleRows = CHANNEL_ROWS.filter(row => {
@@ -919,6 +957,8 @@ function renderGrid() {
   wrapper.innerHTML = '';
   const timeline = document.createElement('div');
   timeline.className = 'timeline';
+
+  // Phase header
   const headerRow = document.createElement('div');
   headerRow.className = 'header-row';
   headerRow.style.setProperty('--phase-count', n);
@@ -945,59 +985,90 @@ function renderGrid() {
     headerRow.appendChild(h);
   });
   timeline.appendChild(headerRow);
-  visibleRows.forEach(row => {
-    const rowEl = document.createElement('div');
-    rowEl.className = 'channel-row';
-    const labelEl = document.createElement('div');
-    labelEl.className = 'channel-label';
-    labelEl.textContent = row.label;
-    rowEl.appendChild(labelEl);
-    const cellsEl = document.createElement('div');
-    cellsEl.className = 'row-cells';
-    const rowTasks = allTasks.filter(t => row.matches.includes(t.channel) && t.phases.some(p => visiblePhases.includes(p)));
-    const spanTasks = [], singleTasks = [];
-    rowTasks.forEach(task => {
-      const idxs = task.phases.map(p => visiblePhases.indexOf(p)).filter(i => i !== -1).sort((a, b) => a - b);
-      if (!idxs.length) return;
-      const contiguous = idxs.length > 1 && idxs.every((v, i) => i === 0 || v === idxs[i-1] + 1);
-      if (contiguous) { spanTasks.push({ task, start: idxs[0], end: idxs[idxs.length - 1] }); }
-      else { idxs.forEach(idx => singleTasks.push({ task, colIdx: idx })); }
+
+  // Render each funnel section
+  FUNNEL_SECTIONS.forEach(funnel => {
+    // Funnel divider row
+    const funnelHeader = document.createElement('div');
+    funnelHeader.className = 'funnel-header';
+    funnelHeader.style.setProperty('--phase-count', n);
+    const fLabel = document.createElement('div');
+    fLabel.className = `funnel-label-cell ${funnel.key}`;
+    fLabel.textContent = funnel.label;
+    funnelHeader.appendChild(fLabel);
+    visiblePhases.forEach((_, i) => {
+      const sp = document.createElement('div');
+      sp.className = 'funnel-phase-spacer';
+      if (i === visiblePhases.length - 1) sp.style.borderRight = 'none';
+      funnelHeader.appendChild(sp);
     });
-    const spanRow = document.createElement('div');
-    spanRow.className = 'span-row';
-    spanRow.style.setProperty('--phase-count', n);
-    spanRow.style.position = 'relative';
-    visiblePhases.forEach((phase, colIdx) => {
-      const bg = document.createElement('div');
-      bg.style.cssText = `position:absolute;top:0;bottom:0;left:calc(${colIdx}*(100%/${n}));width:calc(100%/${n});background:${PHASE_COLORS[phase]?.bg||'#fff'};z-index:0;${colIdx>0?'border-left:1px solid var(--border);':''}`;
-      spanRow.appendChild(bg);
+    timeline.appendChild(funnelHeader);
+
+    // Channel rows for this funnel
+    visibleRows.forEach(row => {
+      const funnelTasks = allTasks.filter(t =>
+        row.matches.includes(t.channel) &&
+        t.phases.some(p => visiblePhases.includes(p)) &&
+        taskFunnel(t) === funnel.key
+      );
+      if (!funnelTasks.length) return;
+
+      const rowEl = document.createElement('div');
+      rowEl.className = 'channel-row';
+      const labelEl = document.createElement('div');
+      labelEl.className = 'channel-label';
+      labelEl.textContent = row.label;
+      rowEl.appendChild(labelEl);
+      const cellsEl = document.createElement('div');
+      cellsEl.className = 'row-cells';
+
+      const spanTasks = [], singleTasks = [];
+      funnelTasks.forEach(task => {
+        const idxs = task.phases.map(p => visiblePhases.indexOf(p)).filter(i => i !== -1).sort((a, b) => a - b);
+        if (!idxs.length) return;
+        const contiguous = idxs.length > 1 && idxs.every((v, i) => i === 0 || v === idxs[i-1] + 1);
+        if (contiguous) { spanTasks.push({ task, start: idxs[0], end: idxs[idxs.length - 1] }); }
+        else { idxs.forEach(idx => singleTasks.push({ task, colIdx: idx })); }
+      });
+
+      const spanRow = document.createElement('div');
+      spanRow.className = 'span-row';
+      spanRow.style.setProperty('--phase-count', n);
+      spanRow.style.position = 'relative';
+      visiblePhases.forEach((phase, colIdx) => {
+        const bg = document.createElement('div');
+        bg.style.cssText = `position:absolute;top:0;bottom:0;left:calc(${colIdx}*(100%/${n}));width:calc(100%/${n});background:${PHASE_COLORS[phase]?.bg||'#fff'};z-index:0;${colIdx>0?'border-left:1px solid var(--border);':''}`;
+        spanRow.appendChild(bg);
+      });
+      spanTasks.forEach(({ task, start, end }) => {
+        const wrap = document.createElement('div');
+        wrap.className = 'span-card-wrap';
+        wrap.style.gridColumn = `${start + 1} / ${end + 2}`;
+        wrap.style.position = 'relative'; wrap.style.zIndex = '1';
+        const card = makeCard(task); card.style.flex = '1';
+        const spanMeta = document.createElement('div');
+        spanMeta.className = 'task-meta';
+        spanMeta.textContent = visiblePhases.slice(start, end + 1).join(' → ');
+        card.appendChild(spanMeta); wrap.appendChild(card); spanRow.appendChild(wrap);
+      });
+      if (spanTasks.length) cellsEl.appendChild(spanRow);
+
+      const stackRow = document.createElement('div');
+      stackRow.className = 'stack-row';
+      stackRow.style.setProperty('--phase-count', n);
+      visiblePhases.forEach((phase, colIdx) => {
+        const cell = document.createElement('div');
+        cell.className = 'phase-cell' + (colIdx === n - 1 ? ' last-col' : '');
+        if (PHASE_COLORS[phase]) cell.style.background = PHASE_COLORS[phase].bg;
+        singleTasks.filter(s => s.colIdx === colIdx).forEach(({ task }) => cell.appendChild(makeCard(task)));
+        stackRow.appendChild(cell);
+      });
+      cellsEl.appendChild(stackRow);
+      rowEl.appendChild(cellsEl);
+      timeline.appendChild(rowEl);
     });
-    spanTasks.forEach(({ task, start, end }) => {
-      const wrap = document.createElement('div');
-      wrap.className = 'span-card-wrap';
-      wrap.style.gridColumn = `${start + 1} / ${end + 2}`;
-      wrap.style.position = 'relative'; wrap.style.zIndex = '1';
-      const card = makeCard(task); card.style.flex = '1';
-      const spanMeta = document.createElement('div');
-      spanMeta.className = 'task-meta';
-      spanMeta.textContent = visiblePhases.slice(start, end + 1).join(' → ');
-      card.appendChild(spanMeta); wrap.appendChild(card); spanRow.appendChild(wrap);
-    });
-    if (spanTasks.length) cellsEl.appendChild(spanRow);
-    const stackRow = document.createElement('div');
-    stackRow.className = 'stack-row';
-    stackRow.style.setProperty('--phase-count', n);
-    visiblePhases.forEach((phase, colIdx) => {
-      const cell = document.createElement('div');
-      cell.className = 'phase-cell' + (colIdx === n - 1 ? ' last-col' : '');
-      if (PHASE_COLORS[phase]) cell.style.background = PHASE_COLORS[phase].bg;
-      singleTasks.filter(s => s.colIdx === colIdx).forEach(({ task }) => cell.appendChild(makeCard(task)));
-      stackRow.appendChild(cell);
-    });
-    cellsEl.appendChild(stackRow);
-    rowEl.appendChild(cellsEl);
-    timeline.appendChild(rowEl);
   });
+
   wrapper.appendChild(timeline);
 }
 
