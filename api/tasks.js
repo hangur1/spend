@@ -8,6 +8,7 @@ module.exports = async function handler(req, res) {
   const PROJECT_ID = '1211763087952574';
   const PHASE_FIELD_GID = '1215397981889360';
   const CHANNEL_FIELD_GID = '1213107724210215';
+  const FUNNEL_FIELD_GID = '1215407065572581';
   const token = process.env.ASANA_TOKEN;
 
   if (!token) return res.status(500).json({ error: 'ASANA_TOKEN not set' });
@@ -64,6 +65,7 @@ module.exports = async function handler(req, res) {
         name: task.name,
         phases: (phaseField?.multi_enum_values || []).map(v => v.name),
         channel: channelField?.enum_value?.name || null,
+        funnel: task.custom_fields?.find(f => f.gid === FUNNEL_FIELD_GID)?.enum_value?.name || null,
         section: task.memberships?.[0]?.section?.name || null,
         tags: (task.tags || []).map(t => t.name),
         due_on: task.due_on || null,
