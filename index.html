@@ -691,12 +691,20 @@ function renderCalendar(tasks) {
   const wrap = document.getElementById('calWrap');
   if (!tasks || !tasks.length) { wrap.innerHTML = '<div class="dlv-loading">No tasks with due dates.</div>'; return; }
 
-  // Build due-date map
+  // Build date-range map — span from start_on to due_on (or just due_on)
   const byDate = {};
   tasks.forEach(task => {
     if (!task.due_on) return;
-    if (!byDate[task.due_on]) byDate[task.due_on] = [];
-    byDate[task.due_on].push(task);
+    const start = task.start_on ? new Date(task.start_on + 'T00:00:00') : new Date(task.due_on + 'T00:00:00');
+    const end = new Date(task.due_on + 'T00:00:00');
+    for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
+      const key = d.toISOString().split('T')[0];
+      // Only add once per task per date, mark if it's start, end, or middle
+      if (!byDate[key]) byDate[key] = [];
+      const isStart = key === (task.start_on || task.due_on);
+      const isEnd = key === task.due_on;
+      byDate[key].push({ ...task, _isStart: isStart, _isEnd: isEnd, _isSpan: task.start_on && task.start_on !== task.due_on });
+    }
   });
 
   // Build phase-date map for bands
@@ -754,7 +762,13 @@ function renderCalendar(tasks) {
       dayTasks.forEach(task => {
         const bg = CHANNEL_COLORS_CAL[task.channel] || '#e8e8e2';
         const displayName = task.name.includes(':') ? task.name.split(':').slice(1).join(':').trim() : task.name;
-        html += `<a href="${task.url}" target="_blank" class="cal-event" style="background:${bg}" title="${task.name}">${displayName}</a>`;
+        // For spans, only show label on start day; middle/end days show as a colored bar
+        const showLabel = !task._isSpan || task._isStart;
+        const borderRadius = task._isSpan
+          ? (task._isStart && task._isEnd ? '3px' : task._isStart ? '3px 0 0 3px' : task._isEnd ? '0 3px 3px 0' : '0')
+          : '3px';
+        const marginRight = task._isSpan && !task._isEnd ? '-1px' : '0';
+        html += `<a href="${task.url}" target="_blank" class="cal-event" style="background:${bg};border-radius:${borderRadius};margin-right:${marginRight};overflow:hidden" title="${task.name}">${showLabel ? displayName : '&nbsp;'}</a>`;
       });
 
       html += `</div>`;
