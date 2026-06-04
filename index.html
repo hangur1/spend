@@ -496,17 +496,8 @@ let allTasks = [], allPhases = [], activePhases = new Set();
 let activeRowFilters = new Set(CHANNEL_ROWS.map(r => r.label));
 
 
-const SECTION_ORDER = [
-  'Creative Deliverables',
-  'Stories Deliverables',
-  'Social Deliverables',
-  'Comms Deliverables',
-  'Events Deliverables',
-  'FEM Deliverables',
-  'Web Deliverables',
-  'Lifecycle Deliverables',
-  'Paid Social Deliverables',
-];
+const PHASE_DISPLAY_ORDER = ['Tease', 'Embargo', 'Phase 1', 'Phase 2', 'Phase 3', 'Sustain', 'TBC'];
+const CHANNEL_DISPLAY_ORDER = ['Brand', 'Creative', 'Design', 'Video', 'Copy', 'Communications', 'Stories', 'Social', 'Events', 'Paid Social', 'Performance Marketing', 'FEM', 'In product/UX', 'PMM', 'Lifecycle', 'Product'];
 
 const STATUS_CLASS = {
   'Planning': 'planning',
@@ -531,7 +522,6 @@ function deliveryLabel(d) {
   if (!d) return null;
   return d.replace(' Deliverable', '');
 }
-
 function statusClass(s) { return STATUS_CLASS[s] || 'not-started'; }
 function deliveryClass(d) { return DELIVERY_CLASS[d] || 'unknown'; }
 
@@ -550,64 +540,81 @@ function renderDeliverables(tasks) {
     return;
   }
 
-  // Group by section
-  const sections = {};
+  // Build phase → channel → tasks structure
+  // A task can appear in multiple phases
+  const phaseMap = {};
   tasks.forEach(task => {
-    const sec = task.section || 'Other';
-    if (!sections[sec]) sections[sec] = [];
-    sections[sec].push(task);
+    const phases = task.phases && task.phases.length ? task.phases : ['TBC'];
+    phases.forEach(phase => {
+      if (!phaseMap[phase]) phaseMap[phase] = {};
+      const ch = task.channel || 'Other';
+      if (!phaseMap[phase][ch]) phaseMap[phase][ch] = [];
+      phaseMap[phase][ch].push(task);
+    });
   });
 
-  // Sort sections
-  const sectionKeys = [
-    ...SECTION_ORDER.filter(s => sections[s]),
-    ...Object.keys(sections).filter(s => !SECTION_ORDER.includes(s))
-  ];
+  const phases = PHASE_DISPLAY_ORDER.filter(p => phaseMap[p]);
 
   let html = '';
-  sectionKeys.forEach(secName => {
-    const secTasks = sections[secName];
-    const label = secName.replace(' Deliverables', '');
+  phases.forEach(phase => {
+    const channelMap = phaseMap[phase];
+    const channels = [
+      ...CHANNEL_DISPLAY_ORDER.filter(c => channelMap[c]),
+      ...Object.keys(channelMap).filter(c => !CHANNEL_DISPLAY_ORDER.includes(c))
+    ];
+
     html += `<div class="dlv-section">
-      <div class="dlv-section-header"><span class="dlv-section-label">${label}</span></div>`;
+      <div class="dlv-section-header">
+        <span class="dlv-section-label">${phase}</span>
+      </div>`;
 
-    secTasks.forEach(task => {
-      const statusCls = statusClass(task.status);
-      const deliveryCls = deliveryClass(task.delivery);
-      const deliveryLbl = deliveryLabel(task.delivery);
-      const dueStr = task.due_on ? formatDate(task.due_on) : '—';
+    channels.forEach(channel => {
+      const channelTasks = channelMap[channel];
+      html += `<div style="padding: 6px 0 2px; border-bottom: 1px dashed var(--border);">
+        <div style="font-size:10px;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--muted);padding:4px 6px 2px;">${channel}</div>`;
 
-      html += `<div class="dlv-row">
-        <div class="dlv-row-header" onclick="dlvToggle(this)">
-          <span class="dlv-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-          <a href="${task.url}" target="_blank" style="text-decoration:none;color:inherit" onclick="event.stopPropagation()"><span class="dlv-name">${task.name}</span></a>
-          <span class="dlv-channel">${task.channel || '—'}</span>
-          ${task.status ? `<span class="dlv-status ${statusCls}">${task.status}</span>` : '<span class="dlv-status not-started">Not Started</span>'}
-          ${deliveryLbl ? `<span class="dlv-delivery ${deliveryCls}">${deliveryLbl}</span>` : '<span class="dlv-delivery unknown">—</span>'}
-          <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap">${dueStr}</span>
-        </div>
-        <div class="dlv-subtasks${task.subtasks && task.subtasks.length ? '' : ' closed'}">`;
+      channelTasks.forEach(task => {
+        const statusCls = statusClass(task.status);
+        const deliveryCls = deliveryClass(task.delivery);
+        const deliveryLbl = deliveryLabel(task.delivery);
+        const dueStr = task.due_on ? formatDate(task.due_on) : '—';
+        const taskDisplayName = task.name.includes(':') ? task.name.split(':').slice(1).join(':').trim() : task.name;
 
-      if (task.subtasks && task.subtasks.length) {
-        task.subtasks.forEach(sub => {
-          const subDeliveryLbl = deliveryLabel(sub.delivery);
-          const subDeliveryCls = deliveryClass(sub.delivery);
-          const checkIcon = sub.completed
-            ? `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#50c878" stroke-width="1.5"/><path d="M4.5 7l2 2 3-3" stroke="#50c878" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
-            : `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#ccc" stroke-width="1.5"/></svg>`;
-          html += `<div class="dlv-sub-row">
-            <span class="dlv-sub-check">${checkIcon}</span>
-            <a href="${sub.url || task.url}" target="_blank" class="dlv-sub-name${sub.completed ? ' done' : ''}">${sub.name.includes(':') ? sub.name.split(':').slice(1).join(':').trim() : sub.name}</a>
-            <span class="dlv-sub-assignee">${sub.assignee || '—'}</span>
-            ${subDeliveryLbl ? `<span class="dlv-sub-delivery dlv-delivery ${subDeliveryCls}">${subDeliveryLbl}</span>` : '<span class="dlv-sub-delivery dlv-delivery unknown">—</span>'}
-            <span class="dlv-sub-due">${sub.due_on ? formatDate(sub.due_on) : '—'}</span>
-          </div>`;
-        });
-      } else {
-        html += `<div style="font-size:11px;color:var(--muted);padding:6px 0;">No subtasks yet</div>`;
-      }
+        html += `<div class="dlv-row">
+          <div class="dlv-row-header" onclick="dlvToggle(this)">
+            <span class="dlv-chevron"><svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M3 2l4 3-4 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            <a href="${task.url}" target="_blank" style="text-decoration:none;color:inherit" onclick="event.stopPropagation()"><span class="dlv-name">${taskDisplayName}</span></a>
+            <span class="dlv-channel">${task.channel || '—'}</span>
+            ${task.status ? `<span class="dlv-status ${statusCls}">${task.status}</span>` : '<span class="dlv-status not-started">Not Started</span>'}
+            ${deliveryLbl ? `<span class="dlv-delivery ${deliveryCls}">${deliveryLbl}</span>` : '<span class="dlv-delivery unknown">—</span>'}
+            <span style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;white-space:nowrap">${dueStr}</span>
+          </div>
+          <div class="dlv-subtasks${task.subtasks && task.subtasks.length ? '' : ' closed'}">`;
 
-      html += `</div></div>`;
+        if (task.subtasks && task.subtasks.length) {
+          task.subtasks.forEach(sub => {
+            const subDeliveryLbl = deliveryLabel(sub.delivery);
+            const subDeliveryCls = deliveryClass(sub.delivery);
+            const checkIcon = sub.completed
+              ? `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#50c878" stroke-width="1.5"/><path d="M4.5 7l2 2 3-3" stroke="#50c878" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+              : `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#ccc" stroke-width="1.5"/></svg>`;
+            const subDisplayName = sub.name.includes(':') ? sub.name.split(':').slice(1).join(':').trim() : sub.name;
+            html += `<div class="dlv-sub-row">
+              <span class="dlv-sub-check">${checkIcon}</span>
+              <a href="${sub.url || task.url}" target="_blank" class="dlv-sub-name${sub.completed ? ' done' : ''}">${subDisplayName}</a>
+              <span class="dlv-sub-assignee">${sub.assignee || '—'}</span>
+              ${subDeliveryLbl ? `<span class="dlv-sub-delivery dlv-delivery ${subDeliveryCls}">${subDeliveryLbl}</span>` : '<span class="dlv-sub-delivery dlv-delivery unknown">—</span>'}
+              <span class="dlv-sub-due">${sub.due_on ? formatDate(sub.due_on) : '—'}</span>
+            </div>`;
+          });
+        } else {
+          html += `<div style="font-size:11px;color:var(--muted);padding:6px 0;">No subtasks yet</div>`;
+        }
+
+        html += `</div></div>`;
+      });
+
+      html += `</div>`;
     });
 
     html += `</div>`;
