@@ -597,7 +597,7 @@ function renderDeliverables(tasks) {
             : `<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="6" stroke="#ccc" stroke-width="1.5"/></svg>`;
           html += `<div class="dlv-sub-row">
             <span class="dlv-sub-check">${checkIcon}</span>
-            <a href="${sub.url || task.url}" target="_blank" class="dlv-sub-name${sub.completed ? ' done' : ''}">${sub.name}</a>
+            <a href="${sub.url || task.url}" target="_blank" class="dlv-sub-name${sub.completed ? ' done' : ''}">${sub.name.includes(':') ? sub.name.split(':').slice(1).join(':').trim() : sub.name}</a>
             <span class="dlv-sub-assignee">${sub.assignee || '—'}</span>
             ${subDeliveryLbl ? `<span class="dlv-sub-delivery dlv-delivery ${subDeliveryCls}">${subDeliveryLbl}</span>` : '<span class="dlv-sub-delivery dlv-delivery unknown">—</span>'}
             <span class="dlv-sub-due">${sub.due_on ? formatDate(sub.due_on) : '—'}</span>
